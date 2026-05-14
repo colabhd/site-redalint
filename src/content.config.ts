@@ -4,7 +4,11 @@ import { glob } from 'astro/loaders';
 const langField = z.enum(['pt', 'es']);
 
 const paginas = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/paginas' }),
+  loader: glob({
+    pattern: '**/*.{md,mdx}',
+    base: './src/content/paginas',
+    generateId: ({ entry }) => entry.replace(/\.(md|mdx)$/, ''),
+  }),
   schema: z.object({
     title: z.string(),
     lang: langField,
@@ -17,7 +21,11 @@ const paginas = defineCollection({
 });
 
 const noticias = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/noticias' }),
+  loader: glob({
+    pattern: '**/*.{md,mdx}',
+    base: './src/content/noticias',
+    generateId: ({ entry }) => entry.replace(/\.(md|mdx)$/, ''),
+  }),
   schema: z.object({
     title: z.string(),
     lang: langField,
