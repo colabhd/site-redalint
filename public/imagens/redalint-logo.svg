@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" role="img" aria-label="REDALINT">
+  <style>
+    .word { font: 700 44px "Roboto Slab", Georgia, serif; fill: #4b0082; letter-spacing: 1px; }
+    .dot { fill: #61ce70; }
+    .tag { font: 500 11px "Roboto", system-ui, sans-serif; fill: #54595f; letter-spacing: 2px; }
+  </style>
+  <text x="0" y="48" class="word">REDALINT</text>
+  <circle cx="298" cy="42" r="6" class="dot"/>
+  <text x="0" y="68" class="tag">RED · INTERNACIONALIZACIÓN ES</text>
+</svg>

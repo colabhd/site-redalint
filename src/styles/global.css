@@ -1,12 +1,74 @@
 @import "tailwindcss";
+
 @plugin "daisyui" {
-  themes: light --default, dark --prefersdark;
+  themes: redalint --default, redalintdark --prefersdark;
   root: ":root";
 }
 
-:root {
-  --color-redalint: #1f4e79;
-  --color-redalint-accent: #e07b00;
+@plugin "daisyui/theme" {
+  name: "redalint";
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+
+  --color-base-100: #ffffff;
+  --color-base-200: #f5f4f8;
+  --color-base-300: #e6e4ee;
+  --color-base-content: #2a2730;
+
+  --color-primary: #4b0082;
+  --color-primary-content: #ffffff;
+
+  --color-secondary: #54595f;
+  --color-secondary-content: #ffffff;
+
+  --color-accent: #61ce70;
+  --color-accent-content: #0b3d12;
+
+  --color-neutral: #1d1a25;
+  --color-neutral-content: #f7f6fb;
+
+  --color-info: #4054b2;
+  --color-success: #23a455;
+  --color-warning: #e07b00;
+  --color-error: #c0392b;
+
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.75rem;
+}
+
+@plugin "daisyui/theme" {
+  name: "redalintdark";
+  prefersdark: true;
+  color-scheme: dark;
+
+  --color-base-100: #15121b;
+  --color-base-200: #1d1a25;
+  --color-base-300: #2a2433;
+  --color-base-content: #ece9f5;
+
+  --color-primary: #9d6bd6;
+  --color-primary-content: #1a0533;
+
+  --color-secondary: #b9b6bf;
+  --color-secondary-content: #15121b;
+
+  --color-accent: #61ce70;
+  --color-accent-content: #082c0f;
+
+  --color-neutral: #0d0a13;
+  --color-neutral-content: #ece9f5;
+
+  --color-info: #6d82e0;
+  --color-success: #2fbe6a;
+  --color-warning: #e69a3a;
+  --color-error: #d65b4f;
+}
+
+@theme {
+  --font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Roboto Slab", ui-serif, Georgia, serif;
 }
 
 html {
@@ -14,8 +76,27 @@ html {
 }
 
 body {
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-sans);
   text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-serif);
+  letter-spacing: -0.01em;
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.section-divider {
+  width: 4rem;
+  height: 4px;
+  background: var(--color-accent);
+  border-radius: 2px;
 }
 
 .prose :where(a):not(:where([class~="not-prose"] *)) {
@@ -25,4 +106,5 @@ body {
 
 .prose :where(h1, h2, h3, h4) {
   scroll-margin-top: 5rem;
+  font-family: var(--font-serif);
 }
