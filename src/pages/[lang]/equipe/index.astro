@@ -1,0 +1,47 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import MembroCard from '~/components/MembroCard.astro';
+import { LANGUAGES, t, type Lang } from '~/i18n/translations';
+
+export function getStaticPaths() {
+  return LANGUAGES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+
+const allMembros = await getCollection('equipe');
+const membros = allMembros
+  .filter((m) => (m.data.lang ?? 'pt') === lang)
+  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
+
+const rendered = await Promise.all(
+  membros.map(async (m) => ({ data: m.data, slug: m.id, Content: (await render(m)).Content })),
+);
+---
+
+<BaseLayout lang={lang} title={t(lang, 'nav.equipe')} pathInLang="equipe">
+  <section class="container mx-auto px-4 py-12 max-w-4xl">
+    <h1 class="section-title text-3xl md:text-4xl text-primary">{t(lang, 'nav.equipe')}</h1>
+    <div class="section-divider mt-3"></div>
+
+    {membros.length === 0 ? (
+      <p class="opacity-70 mt-10">{t(lang, 'team.empty')}</p>
+    ) : (
+      <div class="mt-12">
+        {rendered.map(({ data, Content }) => (
+          <MembroCard
+            lang={lang}
+            name={data.name}
+            role={data.role}
+            affiliation={data.affiliation}
+            photo={data.photo}
+            links={data.links}
+          >
+            <Content />
+          </MembroCard>
+        ))}
+      </div>
+    )}
+  </section>
+</BaseLayout>
