@@ -4,7 +4,7 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
 import Breadcrumbs from '~/components/Breadcrumbs.astro';
 import EditOnGitHub from '~/components/EditOnGitHub.astro';
 import { LOCALE_MAP, t, type Lang } from '~/i18n/translations';
-import { localizedPath } from '~/utils/paths';
+import { localizedPath, withBase } from '~/utils/paths';
 
 export async function getStaticPaths() {
   const entries = await getCollection('noticias');
@@ -26,7 +26,7 @@ const articleLd = {
   "datePublished": entry.data.date.toISOString(),
   "author": { "@type": "Organization", "name": entry.data.author ?? "REDALINT" },
   "image": entry.data.image
-    ? new URL(entry.data.image, Astro.site).toString()
+    ? new URL(withBase(entry.data.image), Astro.site).toString()
     : undefined,
   "mainEntityOfPage": new URL(localizedPath(lang, `noticias/${entry.data.slug ?? entry.id}`), Astro.site).toString(),
 };
@@ -52,7 +52,7 @@ const articleLd = {
     </p>
 
     {entry.data.image && (
-      <img src={entry.data.image} alt="" class="rounded-lg my-8 w-full" loading="lazy" decoding="async" />
+      <img src={withBase(entry.data.image)} alt="" class="rounded-lg my-8 w-full" loading="lazy" decoding="async" />
     )}
 
     <div class="prose max-w-none mt-8 dark:prose-invert">

@@ -1,6 +1,6 @@
 ---
 import { LOCALE_MAP, t, type Lang } from '~/i18n/translations';
-import { localizedPath } from '~/utils/paths';
+import { localizedPath, withBase } from '~/utils/paths';
 
 interface Props {
   lang: Lang;
@@ -13,6 +13,7 @@ interface Props {
 }
 const { lang, slug, title, date, excerpt, image, dateFormat = 'short' } = Astro.props;
 const href = localizedPath(lang, `noticias/${slug}`);
+const imgSrc = image ? withBase(image) : undefined;
 
 const formatted = dateFormat === 'long'
   ? new Intl.DateTimeFormat(LOCALE_MAP[lang], { dateStyle: 'long' }).format(date)
@@ -22,7 +23,7 @@ const formatted = dateFormat === 'long'
 <article class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow border border-base-300">
   {image && (
     <figure class="aspect-[16/9] overflow-hidden">
-      <img src={image} alt="" loading="lazy" decoding="async" class="w-full h-full object-cover" />
+      <img src={imgSrc} alt="" loading="lazy" decoding="async" class="w-full h-full object-cover" />
     </figure>
   )}
   <div class="card-body">

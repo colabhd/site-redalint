@@ -2,16 +2,20 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import tailwindcss from '@tailwindcss/vite';
 import pagefind from 'astro-pagefind';
+import { remarkBasePaths } from './scripts/remark-base-paths.mjs';
 
-const isProd = process.env.NODE_ENV === 'production';
+const BASE = '/site-redalint';
 
 export default defineConfig({
   site: 'https://colabhd.github.io',
-  base: '/site-redalint',
+  base: BASE,
   trailingSlash: 'always',
   output: 'static',
   build: { format: 'directory' },
-  integrations: [mdx(), pagefind()],
+  integrations: [
+    mdx({ remarkPlugins: [[remarkBasePaths, { base: BASE }]] }),
+    pagefind(),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },
