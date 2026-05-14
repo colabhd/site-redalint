@@ -9,10 +9,14 @@ interface Props {
   date: Date;
   excerpt?: string;
   image?: string;
+  dateFormat?: 'short' | 'long';
 }
-const { lang, slug, title, date, excerpt, image } = Astro.props;
+const { lang, slug, title, date, excerpt, image, dateFormat = 'short' } = Astro.props;
 const href = localizedPath(lang, `noticias/${slug}`);
-const formatted = new Intl.DateTimeFormat(LOCALE_MAP[lang], { dateStyle: 'long' }).format(date);
+
+const formatted = dateFormat === 'long'
+  ? new Intl.DateTimeFormat(LOCALE_MAP[lang], { dateStyle: 'long' }).format(date)
+  : new Intl.DateTimeFormat(LOCALE_MAP[lang], { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
 ---
 
 <article class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow border border-base-300">
