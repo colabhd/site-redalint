@@ -25,6 +25,16 @@ export const GET: APIRoute = async ({ site }) => {
     urls.add(new URL(localizedPath(n.data.lang, `noticias/${slug}`), site).toString());
   }
 
+  const equipe = await getCollection('equipe');
+  for (const m of equipe) {
+    for (const lang of LANGUAGES) {
+      urls.add(new URL(localizedPath(lang, `equipe/${m.id}`), site).toString());
+    }
+  }
+  for (const lang of LANGUAGES) {
+    urls.add(new URL(localizedPath(lang, 'equipe'), site).toString());
+  }
+
   const body =
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +

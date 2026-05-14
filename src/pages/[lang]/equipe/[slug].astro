@@ -1,0 +1,49 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import MembroCard from '~/components/MembroCard.astro';
+import { LANGUAGES, t, type Lang } from '~/i18n/translations';
+import { localizedPath } from '~/utils/paths';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('equipe');
+  // emit each member under every language to keep URLs consistent;
+  // bio language stays as authored (mostly pt).
+  return entries.flatMap((entry) =>
+    LANGUAGES.map((lang) => ({
+      params: { lang, slug: entry.id },
+      props: { entry },
+    })),
+  );
+}
+
+const { entry } = Astro.props;
+const lang = Astro.params.lang as Lang;
+const { Content } = await render(entry);
+---
+
+<BaseLayout
+  lang={lang}
+  title={entry.data.name}
+  description={entry.data.role}
+  image={entry.data.photo}
+  pathInLang={`equipe/${entry.id}`}
+>
+  <section class="container mx-auto px-4 py-12 max-w-4xl">
+    <p class="opacity-70 text-sm">
+      <a href={localizedPath(lang, 'equipe')} class="link link-hover">← {t(lang, 'nav.equipe')}</a>
+    </p>
+    <div class="mt-6">
+      <MembroCard
+        lang={lang}
+        name={entry.data.name}
+        role={entry.data.role}
+        affiliation={entry.data.affiliation}
+        photo={entry.data.photo}
+        links={entry.data.links}
+      >
+        <Content />
+      </MembroCard>
+    </div>
+  </section>
+</BaseLayout>
