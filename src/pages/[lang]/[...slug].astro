@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import Breadcrumbs from '~/components/Breadcrumbs.astro';
+import EditOnGitHub from '~/components/EditOnGitHub.astro';
 import type { Lang } from '~/i18n/translations';
 
 export async function getStaticPaths() {
@@ -32,5 +33,6 @@ const slug = entry.data.slug ?? entry.id;
     <div class="prose max-w-none mt-8 dark:prose-invert">
       <Content />
     </div>
+    <EditOnGitHub collection="paginas" lang={lang} slug={slug} />
   </article>
 </BaseLayout>

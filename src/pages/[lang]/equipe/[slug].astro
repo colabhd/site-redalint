@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import MembroCard from '~/components/MembroCard.astro';
+import EditOnGitHub from '~/components/EditOnGitHub.astro';
 import { LANGUAGES, t, type Lang } from '~/i18n/translations';
 import { localizedPath } from '~/utils/paths';
 
@@ -45,5 +46,6 @@ const { Content } = await render(entry);
         <Content />
       </MembroCard>
     </div>
+    <EditOnGitHub collection="equipe" slug={entry.id} />
   </section>
 </BaseLayout>

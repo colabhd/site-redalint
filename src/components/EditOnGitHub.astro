@@ -1,0 +1,20 @@
+---
+interface Props {
+  collection: 'paginas' | 'noticias' | 'equipe';
+  lang?: string;
+  slug: string;
+}
+const { collection, lang, slug } = Astro.props;
+const REPO = 'colabhd/site-redalint';
+const BRANCH = 'main';
+const pathSegment = collection === 'equipe'
+  ? `src/content/equipe/${slug}.mdx`
+  : `src/content/${collection}/${lang}/${slug}.mdx`;
+const href = `https://github.com/${REPO}/edit/${BRANCH}/${pathSegment}`;
+---
+
+<p class="mt-12 pt-6 border-t border-base-300 text-sm opacity-70">
+  <a href={href} rel="noopener" target="_blank" class="link link-hover">
+    ✎ Editar esta página no GitHub ↗
+  </a>
+</p>
