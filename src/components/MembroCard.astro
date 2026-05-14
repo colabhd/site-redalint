@@ -1,0 +1,75 @@
+---
+import type { Lang } from '~/i18n/translations';
+import { t } from '~/i18n/translations';
+
+interface Props {
+  lang: Lang;
+  name: string;
+  role?: string;
+  affiliation?: string;
+  photo?: string;
+  links?: {
+    lattes?: string;
+    orcid?: string;
+    site?: string;
+    email?: string;
+  };
+}
+const { lang, name, role, affiliation, photo, links = {} } = Astro.props;
+---
+
+<article class="border-b border-base-300 pb-12 mb-12 last:border-b-0 last:mb-0 last:pb-0">
+  <div class="grid md:grid-cols-[260px_1fr] gap-8 items-start">
+    {photo && (
+      <figure class="overflow-hidden rounded-lg bg-base-200">
+        <img
+          src={photo}
+          alt={name}
+          loading="lazy"
+          decoding="async"
+          class="w-full h-auto object-cover aspect-[3/4]"
+        />
+      </figure>
+    )}
+    <div>
+      <h2 class="section-title text-2xl text-primary">{name}</h2>
+      {role && <p class="text-sm uppercase tracking-wide opacity-70 mt-1">{role}</p>}
+      {affiliation && <p class="text-sm opacity-80 mt-1">{affiliation}</p>}
+      <div class="prose max-w-none mt-4 dark:prose-invert">
+        <slot />
+      </div>
+      {(links.lattes || links.orcid || links.site || links.email) && (
+        <ul class="flex flex-wrap items-center gap-3 mt-6 list-none p-0">
+          {links.lattes && (
+            <li>
+              <a class="btn btn-sm btn-outline btn-primary" href={links.lattes} rel="noopener" target="_blank">
+                Lattes ↗
+              </a>
+            </li>
+          )}
+          {links.orcid && (
+            <li>
+              <a class="btn btn-sm btn-outline btn-primary" href={links.orcid} rel="noopener" target="_blank">
+                ORCID ↗
+              </a>
+            </li>
+          )}
+          {links.site && (
+            <li>
+              <a class="btn btn-sm btn-outline btn-primary" href={links.site} rel="noopener" target="_blank">
+                {t(lang, 'team.personal_site')} ↗
+              </a>
+            </li>
+          )}
+          {links.email && (
+            <li>
+              <a class="btn btn-sm btn-outline btn-primary" href={`mailto:${links.email}`}>
+                {t(lang, 'team.email')}
+              </a>
+            </li>
+          )}
+        </ul>
+      )}
+    </div>
+  </div>
+</article>

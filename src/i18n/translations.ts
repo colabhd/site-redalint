@@ -52,6 +52,9 @@ const pt: Dict = {
   'news.read_more': 'Ler mais',
   'news.published_on': 'Publicado em',
   'news.empty': 'Ainda não há notícias publicadas.',
+  'team.personal_site': 'Página pessoal',
+  'team.email': 'E-mail',
+  'team.empty': 'Ainda não há membros cadastrados.',
 };
 
 const es: Dict = {
@@ -96,6 +99,9 @@ const es: Dict = {
   'news.read_more': 'Leer más',
   'news.published_on': 'Publicado el',
   'news.empty': 'Aún no hay noticias publicadas.',
+  'team.personal_site': 'Página personal',
+  'team.email': 'Correo',
+  'team.empty': 'Aún no hay miembros registrados.',
 };
 
 const DICTS: Record<Lang, Dict> = { pt, es };
