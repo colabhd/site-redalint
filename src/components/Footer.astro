@@ -1,0 +1,39 @@
+---
+import { t, type Lang } from '~/i18n/translations';
+import { localizedPath } from '~/utils/paths';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-16 border-t border-base-300 bg-base-200/40">
+  <div class="container mx-auto px-4 py-10 grid gap-8 md:grid-cols-3 text-sm">
+    <div>
+      <p class="font-semibold text-primary text-base">REDALINT</p>
+      <p class="opacity-80 mt-2">{t(lang, 'site.tagline')}</p>
+    </div>
+    <nav aria-label="Footer">
+      <ul class="space-y-2">
+        <li><a class="link link-hover" href={localizedPath(lang, 'institucional')}>{t(lang, 'nav.institucional')}</a></li>
+        <li><a class="link link-hover" href={localizedPath(lang, 'noticias')}>{t(lang, 'nav.noticias')}</a></li>
+        <li><a class="link link-hover" href={localizedPath(lang, 'publicacoes')}>{t(lang, 'nav.publicacoes')}</a></li>
+        <li><a class="link link-hover" href="https://acervo.redalint.org/" rel="noopener" target="_blank">{t(lang, 'nav.acervo')} ↗</a></li>
+      </ul>
+    </nav>
+    <div class="space-y-2">
+      <a class="link link-hover block" href="https://github.com/colabhd/site-redalint" rel="noopener" target="_blank">
+        {t(lang, 'footer.source')} ↗
+      </a>
+      <a class="link link-hover block" href={`${import.meta.env.BASE_URL}rss.xml`.replace(/\/+/g, '/')}>
+        RSS
+      </a>
+    </div>
+  </div>
+  <div class="border-t border-base-300">
+    <div class="container mx-auto px-4 py-4 text-xs opacity-70 flex flex-wrap items-center justify-between gap-2">
+      <span>© {year} REDALINT — {t(lang, 'footer.rights')}</span>
+      <span>Hospedado no GitHub Pages</span>
+    </div>
+  </div>
+</footer>

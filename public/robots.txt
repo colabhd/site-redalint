@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://colabhd.github.io/site-redalint/sitemap.xml

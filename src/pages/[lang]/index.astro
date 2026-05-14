@@ -1,0 +1,61 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Hero from '~/components/Hero.astro';
+import NoticiaCard from '~/components/NoticiaCard.astro';
+import { LANGUAGES, t, type Lang } from '~/i18n/translations';
+import { localizedPath } from '~/utils/paths';
+
+export function getStaticPaths() {
+  return LANGUAGES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+
+const allNews = await getCollection('noticias', (e) => e.data.lang === lang);
+const latest = allNews
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const subtitle = t(lang, 'site.tagline');
+---
+
+<BaseLayout
+  lang={lang}
+  title={t(lang, 'site.title')}
+  description={subtitle}
+  pathInLang=""
+>
+  <Hero
+    title={t(lang, 'site.title')}
+    subtitle={subtitle}
+    ctaHref={localizedPath(lang, 'institucional')}
+    ctaLabel={t(lang, 'nav.institucional')}
+    secondaryHref="https://acervo.redalint.org/"
+    secondaryLabel={t(lang, 'nav.acervo')}
+  />
+
+  <section class="container mx-auto px-4 py-16">
+    <div class="flex items-end justify-between mb-8">
+      <h2 class="text-2xl md:text-3xl font-bold">{t(lang, 'news.title')}</h2>
+      <a href={localizedPath(lang, 'noticias')} class="link link-primary text-sm">{t(lang, 'news.read_more')} →</a>
+    </div>
+
+    {latest.length === 0 ? (
+      <p class="opacity-70">{t(lang, 'news.empty')}</p>
+    ) : (
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {latest.map((n) => (
+          <NoticiaCard
+            lang={lang}
+            slug={n.data.slug ?? n.id}
+            title={n.data.title}
+            date={n.data.date}
+            excerpt={n.data.excerpt}
+            image={n.data.image}
+          />
+        ))}
+      </div>
+    )}
+  </section>
+</BaseLayout>
