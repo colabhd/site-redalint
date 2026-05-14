@@ -78,13 +78,24 @@ const ogImage = image
         }
       })();
     </script>
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "REDALINT",
+      "url": Astro.site?.toString(),
+      "logo": new URL(`${import.meta.env.BASE_URL}imagens/redalint-logo.svg`.replace(/\/+/g, '/'), Astro.site).toString(),
+      "sameAs": [
+        "https://github.com/colabhd/site-redalint",
+        "https://acervo.redalint.org/"
+      ]
+    })}></script>
   </head>
   <body class="min-h-screen flex flex-col bg-base-100 text-base-content antialiased">
     <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 btn btn-primary btn-sm">
       Ir para o conteúdo
     </a>
     <Header lang={lang} pathInLang={pathInLang} />
-    <main id="main" class="flex-1">
+    <main id="main" data-pagefind-body class="flex-1">
       <slot />
     </main>
     <Footer lang={lang} />

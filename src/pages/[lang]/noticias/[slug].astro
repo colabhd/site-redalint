@@ -18,6 +18,18 @@ const { entry } = Astro.props;
 const lang = entry.data.lang as Lang;
 const { Content } = await render(entry);
 const date = new Intl.DateTimeFormat(LOCALE_MAP[lang], { dateStyle: 'long' }).format(entry.data.date);
+
+const articleLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": entry.data.title,
+  "datePublished": entry.data.date.toISOString(),
+  "author": { "@type": "Organization", "name": entry.data.author ?? "REDALINT" },
+  "image": entry.data.image
+    ? new URL(entry.data.image, Astro.site).toString()
+    : undefined,
+  "mainEntityOfPage": new URL(localizedPath(lang, `noticias/${entry.data.slug ?? entry.id}`), Astro.site).toString(),
+};
 ---
 
 <BaseLayout
@@ -27,6 +39,7 @@ const date = new Intl.DateTimeFormat(LOCALE_MAP[lang], { dateStyle: 'long' }).fo
   image={entry.data.image}
   pathInLang={`noticias/${entry.data.slug ?? entry.id}`}
 >
+  <script type="application/ld+json" set:html={JSON.stringify(articleLd)}></script>
   <article class="container mx-auto px-4 py-12 max-w-3xl">
     <Breadcrumbs lang={lang} trail={[
       { label: t(lang, 'news.title'), href: localizedPath(lang, 'noticias') },
