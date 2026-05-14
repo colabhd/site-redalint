@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '~/layouts/BaseLayout.astro';
+import Breadcrumbs from '~/components/Breadcrumbs.astro';
 import { LOCALE_MAP, t, type Lang } from '~/i18n/translations';
 import { localizedPath } from '~/utils/paths';
 
@@ -26,9 +27,10 @@ const date = new Intl.DateTimeFormat(LOCALE_MAP[lang], { dateStyle: 'long' }).fo
   pathInLang={`noticias/${entry.data.slug ?? entry.id}`}
 >
   <article class="container mx-auto px-4 py-12 max-w-3xl">
-    <p class="opacity-70 text-sm">
-      <a href={localizedPath(lang, 'noticias')} class="link link-hover">← {t(lang, 'news.title')}</a>
-    </p>
+    <Breadcrumbs lang={lang} trail={[
+      { label: t(lang, 'news.title'), href: localizedPath(lang, 'noticias') },
+      { label: entry.data.title },
+    ]} />
     <h1 class="text-3xl md:text-4xl font-bold mt-3">{entry.data.title}</h1>
     <p class="opacity-70 mt-2 text-sm">
       <time datetime={entry.data.date.toISOString()}>{t(lang, 'news.published_on')} {date}</time>
