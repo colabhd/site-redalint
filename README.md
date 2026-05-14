@@ -96,3 +96,25 @@ Para usar `redalint.org` futuramente: criar `public/CNAME` com `redalint.org`, a
 URLs do WordPress eram `/<slug>/`. A nova estrutura é `/<lang>/<slug>/`, então URLs antigas mudam. Para preservar links externos, podemos adicionar páginas-stub em `/<slug>/` com `<meta http-equiv="refresh">` + canonical para a rota nova (não criadas neste commit).
 
 O `BaseLayout` já emite: canonical, `<link rel="alternate" hreflang>` para todos os idiomas, OG/Twitter, sitemap em `/sitemap.xml`, RSS em `/rss.xml`, e dark/light com script inline (sem FOUC).
+
+## Domínio customizado (redalint.org)
+
+Quando o novo site estiver pronto para substituir o WordPress:
+
+1. Criar `public/CNAME` com conteúdo único `redalint.org` (sem `http://`)
+2. Editar `astro.config.mjs`:
+   ```js
+   site: 'https://redalint.org',
+   base: '/',  // remove '/site-redalint'
+   ```
+3. Editar `scripts/build-redirects.mjs`: setar `PUBLIC_BASE_URL=''` (variável de ambiente) ou ajustar o fallback do script para `''` quando o domínio for raiz.
+4. Atualizar `public/robots.txt`: trocar a linha do `Sitemap` para `https://redalint.org/sitemap.xml`.
+5. No GitHub: **Settings → Pages → Custom domain** = `redalint.org`; habilitar **Enforce HTTPS**.
+6. No registrador DNS:
+   - Apex (`redalint.org`): registros A para os 4 IPs do GitHub Pages: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153` (e/ou AAAA `2606:50c0:8000::153`, `…8001::153`, `…8002::153`, `…8003::153`)
+   - `www.redalint.org`: CNAME para `colabhd.github.io`
+7. Aguardar propagação DNS + emissão automática do certificado HTTPS (~24 h).
+8. Validar:
+   - `https://redalint.org/` → home pt
+   - `https://redalint.org/institucional/` → redireciona para `/pt/institucional/` (stub continua funcionando após o switch)
+   - `https://redalint.org/sitemap.xml`, `/rss.xml` → respondem 200
