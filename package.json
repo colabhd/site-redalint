@@ -1,0 +1,35 @@
+{
+  "name": "site-redalint",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Site da REDALINT — Astro estático para GitHub Pages",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build && pagefind --site dist",
+    "preview": "astro preview",
+    "astro": "astro",
+    "typecheck": "astro check",
+    "convert-wp": "node scripts/wp-to-mdx.mjs"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^5.0.0",
+    "@astrojs/rss": "^4.0.12",
+    "@tailwindcss/vite": "4.1.18",
+    "astro": "^6.3.0",
+    "astro-pagefind": "^1.8.3",
+    "daisyui": "^5.0.0",
+    "pagefind": "^1.5.0",
+    "sharp": "^0.34.0",
+    "tailwindcss": "4.1.18",
+    "theme-change": "^2.5.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@types/node": "^22.10.0",
+    "fast-xml-parser": "^5.0.0",
+    "turndown": "^7.2.0",
+    "typescript": "^5.7.0"
+  }
+}
