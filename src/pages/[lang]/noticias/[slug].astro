@@ -71,7 +71,7 @@ const date = new Intl.DateTimeFormat(LOCALE_MAP[lang], { dateStyle: 'long' }).fo
       <img src={assetPath(entry.data.image)} alt="" class="rounded-lg my-8 w-full" loading="lazy" decoding="async" />
     )}
 
-    <div class="prose max-w-none mt-8 dark:prose-invert">
+    <div class="prose max-w-none mt-8">
       <Content />
     </div>
     <EditOnGitHub lang={lang} collection="noticias" slug={entrySlug(entry)} />
