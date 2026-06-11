@@ -37,7 +37,7 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
   <section class="relative overflow-hidden bg-base-200">
     <div class="container mx-auto px-4 py-20 md:py-28 grid md:grid-cols-2 gap-10 items-center">
       <div>
-        <p class="text-accent font-bold uppercase tracking-widest text-sm">REDALINT</p>
+        <p class="text-primary font-bold uppercase tracking-widest text-sm">REDALINT</p>
         <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-primary mt-3 leading-tight text-balance">
           {t(lang, 'home.welcome')}
         </h1>
@@ -46,7 +46,7 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
           <a class="btn btn-primary" href={localizedPath(lang, 'institucional')}>
-            {t(lang, 'common.know_more')}
+            {t(lang, 'home.cta_institucional')}
           </a>
           <a class="btn btn-outline btn-primary" href="https://acervo.redalint.org/" rel="noopener" target="_blank">
             {t(lang, 'nav.acervo')} ↗
@@ -58,7 +58,7 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
           src={mapImg}
           alt=""
           aria-hidden="true"
-          class="max-h-[420px] w-auto opacity-90 rounded-box"
+          class="max-h-[420px] w-auto rounded-box bg-white p-4"
           loading="eager"
           decoding="async"
           onerror="this.style.display='none'"
@@ -77,7 +77,7 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
       </p>
       <div class="mt-8">
         <a class="btn bg-base-100 text-primary border-none hover:bg-base-200" href={localizedPath(lang, 'institucional')}>
-          {t(lang, 'common.know_more')}
+          {t(lang, 'home.cta_institucional')}
         </a>
       </div>
     </div>
@@ -137,7 +137,7 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
         <div class="section-divider mt-3"></div>
         <p class="mt-5 opacity-80 text-lg">{t(lang, 'home.research_body')}</p>
         <a class="btn btn-primary mt-6" href={localizedPath(lang, 'pesquisas')}>
-          {t(lang, 'common.know_more')}
+          {t(lang, 'home.cta_pesquisas')}
         </a>
       </div>
       <div class="bg-base-200 rounded-box aspect-[4/3] flex items-center justify-center">
@@ -157,7 +157,7 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
         <div class="section-divider mt-3"></div>
         <p class="mt-5 opacity-80 text-lg">{t(lang, 'home.publications_body')}</p>
         <a class="btn btn-primary mt-6" href={localizedPath(lang, 'publicacoes')}>
-          {t(lang, 'common.know_more')}
+          {t(lang, 'home.cta_publicacoes')}
         </a>
       </div>
       <div class="md:order-1 bg-base-200 rounded-box aspect-[4/3] flex items-center justify-center">
@@ -186,7 +186,7 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
         <h3 class="section-title text-xl mt-5">{t(lang, 'home.initiative_journal')}</h3>
         <p class="opacity-80 mt-3">{t(lang, 'home.initiative_journal_body')}</p>
         <a class="btn btn-primary mt-6" href={localizedPath(lang, 'revista')}>
-          {t(lang, 'common.know_more')}
+          {t(lang, 'home.cta_revista')}
         </a>
       </article>
       <article class="border border-white/10 rounded-box p-8 text-center hover:border-accent/60 transition-colors">
@@ -200,7 +200,7 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
         <h3 class="section-title text-xl mt-5">{t(lang, 'home.initiative_archive')}</h3>
         <p class="opacity-80 mt-3">{t(lang, 'home.initiative_archive_body')}</p>
         <a class="btn btn-primary mt-6" href="https://acervo.redalint.org/" rel="noopener" target="_blank">
-          {t(lang, 'common.know_more')} ↗
+          {t(lang, 'home.cta_acervo')} ↗
         </a>
       </article>
     </div>
@@ -245,7 +245,7 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
       <div class="section-divider mx-auto mt-4"></div>
       <p class="mt-6 text-lg opacity-95">{t(lang, 'home.team_body')}</p>
       <a class="btn bg-base-100 text-primary border-none hover:bg-base-200 mt-8" href={localizedPath(lang, 'equipe')}>
-        {t(lang, 'common.know_more')}
+        {t(lang, 'home.cta_equipe')}
       </a>
     </div>
   </SectionBand>

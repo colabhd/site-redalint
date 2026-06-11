@@ -27,6 +27,7 @@ const { lang } = Astro.props;
     function reflect() {
       const t = document.documentElement.getAttribute('data-theme') || 'redalint';
       const dark = t === 'redalintdark';
+      btn.setAttribute('aria-pressed', String(dark));
       if (sun) sun.classList.toggle('hidden', !dark);
       if (moon) moon.classList.toggle('hidden', dark);
     }

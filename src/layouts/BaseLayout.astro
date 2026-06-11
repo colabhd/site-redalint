@@ -78,7 +78,8 @@ const ogImage = image
     <meta property="og:image" content={ogImage} />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+    <link rel="icon" type="image/png" sizes="32x32" href={`${import.meta.env.BASE_URL}favicon-32.png`.replace(/\/+/g, '/')} />
+    <link rel="apple-touch-icon" href={`${import.meta.env.BASE_URL}apple-touch-icon.png`.replace(/\/+/g, '/')} />
 
     <script
       type="application/ld+json"
@@ -106,8 +107,8 @@ const ogImage = image
     </script>
   </head>
   <body class="min-h-screen flex flex-col bg-base-100 text-base-content antialiased">
-    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 btn btn-primary btn-sm">
-      Ir para o conteúdo
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 z-50 btn btn-primary btn-sm">
+      {t(lang, 'a11y.skip')}
     </a>
     <Header lang={lang} pathInLang={pathInLang} availableLangs={availableLangs} />
     <main id="main" class="flex-1" data-pagefind-body>

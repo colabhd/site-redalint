@@ -19,11 +19,15 @@ const lang = Astro.params.lang as Lang;
     <script is:inline define:vars={{ base: import.meta.env.BASE_URL, lang }}>
       window.addEventListener('DOMContentLoaded', () => {
         const url = (base + '/pagefind/pagefind-ui.js').replace(/\/+/g, '/');
+        const label = lang === 'es' ? 'Buscar en el sitio' : 'Buscar no site';
         const s = document.createElement('script');
         s.src = url;
         s.onload = () => {
           // eslint-disable-next-line no-undef
-          new PagefindUI({ element: '#search', showSubResults: true, translations: { placeholder: lang === 'es' ? 'Buscar…' : 'Buscar…' } });
+          new PagefindUI({ element: '#search', showSubResults: true, translations: { placeholder: 'Buscar…' } });
+          requestAnimationFrame(() => {
+            document.querySelector('.pagefind-ui__search-input')?.setAttribute('aria-label', label);
+          });
         };
         document.head.appendChild(s);
       });
