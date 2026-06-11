@@ -115,14 +115,14 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
         ].map((eixo) => (
           <a
             href={eixo.href}
-            class="border border-base-300 rounded-box p-6 text-center hover:border-primary/60 hover:shadow-sm transition-all"
+            class="border border-base-300 rounded-box p-4 md:p-6 text-center hover:border-primary/60 hover:shadow-sm transition-all"
           >
             <div class="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d={eixo.icon} />
               </svg>
             </div>
-            <p class="section-title text-base mt-4">{eixo.label}</p>
+            <p class="section-title text-sm md:text-base mt-4 break-words hyphens-auto">{eixo.label}</p>
           </a>
         ))
       }
