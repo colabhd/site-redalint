@@ -38,7 +38,7 @@ const slug = entrySlug(entry);
     <Breadcrumbs lang={lang} trail={[{ label: entry.data.title }]} />
     <h1 class="text-3xl md:text-4xl font-bold">{entry.data.title}</h1>
     {entry.data.description && <p class="opacity-80 mt-3 text-lg">{entry.data.description}</p>}
-    <div class="prose max-w-none mt-8 dark:prose-invert">
+    <div class="prose max-w-none mt-8">
       <Content />
     </div>
     <EditOnGitHub lang={lang} collection="paginas" slug={slug} />
