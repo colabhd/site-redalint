@@ -6,9 +6,10 @@
  *   - src/content/paginas/<lang>/<slug>.mdx
  *   - src/content/noticias/<lang>/<slug>.mdx
  *
- * Faz download das imagens referenciadas para `public/imagens/wp/` e
- * reescreve URLs no conteúdo. Limpa comentários do Elementor e shortcodes
- * simples antes de converter HTML→Markdown via Turndown.
+ * Reescreve links internos (redalint.org/<slug>) para as rotas novas
+ * (/<lang>/<slug>/), corrige aspas corrompidas do export, remove o
+ * cabeçalho do Elementor vazado no conteúdo e gera o manifest de imagens
+ * em `scripts/wp-images.json` (consumido por download-wp-images.mjs).
  *
  * Uso:
  *   node scripts/wp-to-mdx.mjs [caminho-do-xml]
@@ -19,6 +20,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { XMLParser } from 'fast-xml-parser';
 import TurndownService from 'turndown';
+import { downloadImages } from './download-wp-images.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -31,17 +33,25 @@ function findDefaultXml() {
   return path.join(ROOT, 'redalint.WordPress.2026-05-14.xml');
 }
 
-const SPANISH_SLUGS = new Set([
-  // páginas que sabemos ser em espanhol
-  'como-colaborar-espanol',
-]);
-
-// classifica como "noticia" (post) tudo que vier como wp:post_type=post;
-// páginas com slug deste set viram noticia também (ex.: posts fora da árvore)
-const NEWS_PAGE_SLUGS = new Set();
+// páginas geradas dinamicamente pelo Astro — não viram MDX
+// (home → [lang]/index.astro; noticias → [lang]/noticias/index.astro)
+const SKIP_PAGE_SLUGS = new Set(['home', 'noticias']);
 
 const slugRemap = {
-  'como-colaborar-espanol': { slug: 'como-colaborar', lang: 'es' },
+  'como-colaborar-espanol': { slug: 'como-colaborar', lang: 'es', title: 'Cómo colaborar' },
+};
+
+// ordem das páginas (menus/listagens); demais recebem o default do schema
+const PAGE_ORDER = {
+  institucional: 10,
+  publicacoes: 20,
+  pesquisas: 30,
+  equipe: 40,
+  'julieta-abba': 45,
+  'sobre-o-acervo': 50,
+  'como-pesquisar': 51,
+  'como-colaborar': 52,
+  'equipe-acervo': 53,
 };
 
 const td = new TurndownService({
@@ -51,7 +61,7 @@ const td = new TurndownService({
   emDelimiter: '_',
 });
 
-// Preserva figuras com legenda
+// Preserva figuras (com legenda e link envolvente, ex.: badges Lattes/ORCID)
 td.addRule('figure', {
   filter: 'figure',
   replacement(content, node) {
@@ -61,7 +71,11 @@ td.addRule('figure', {
     const src = img.getAttribute('src') ?? '';
     const alt = (img.getAttribute('alt') ?? '').replace(/[\[\]]/g, '');
     const caption = cap ? cap.textContent.trim() : '';
-    return `\n\n![${alt || caption}](${src})${caption ? `\n\n*${caption}*` : ''}\n\n`;
+    const anchor = img.closest?.('a');
+    const href = anchor?.getAttribute('href') ?? '';
+    let image = `![${alt || caption}](${src})`;
+    if (href) image = `[${image}](${href})`;
+    return `\n\n${image}${caption ? `\n\n*${caption}*` : ''}\n\n`;
   },
 });
 
@@ -77,9 +91,8 @@ async function main() {
   const doc = parser.parse(xml);
   const items = toArray(doc?.rss?.channel?.item);
 
-  const imageJobs = new Map(); // url -> localPath
-  const stats = { paginas: 0, noticias: 0, skipped: 0 };
-
+  // 1º passe: coleta entradas publicadas para mapear links internos
+  const entries = [];
   for (const item of items) {
     const postType = cdata(item['wp:post_type']);
     const status = cdata(item['wp:status']);
@@ -87,66 +100,102 @@ async function main() {
     if (postType !== 'page' && postType !== 'post') continue;
 
     const title = cdata(item.title);
-    let slug = (cdata(item['wp:post_name']) || slugify(title)).toLowerCase();
+    const wpSlug = (cdata(item['wp:post_name']) || slugify(title)).toLowerCase();
+    if (!wpSlug) continue;
+
+    let lang = 'pt';
+    let slug = wpSlug;
+    let finalTitle = title;
+    if (slugRemap[wpSlug]) {
+      ({ slug, lang } = slugRemap[wpSlug]);
+      finalTitle = slugRemap[wpSlug].title ?? title;
+    } else if (wpSlug.endsWith('-espanol') || wpSlug.endsWith('-es')) {
+      lang = 'es';
+    }
+
+    const isNews = postType === 'post';
+    entries.push({ item, wpSlug, slug, lang, isNews, title: finalTitle });
+  }
+
+  // mapa de rotas internas: slug original do WP → caminho novo
+  const internalRoutes = new Map([
+    ['', '/pt/'],
+    ['home', '/pt/'],
+    ['noticias', '/pt/noticias/'],
+  ]);
+  for (const e of entries) {
+    const target = e.isNews ? `/${e.lang}/noticias/${e.slug}/` : `/${e.lang}/${e.slug}/`;
+    internalRoutes.set(e.wpSlug, target);
+  }
+
+  const imageJobs = new Map(); // url remota → caminho local (/imagens/wp/…)
+  const stats = { paginas: 0, noticias: 0, skipped: 0 };
+
+  for (const { item, wpSlug, slug, lang, isNews, title } of entries) {
+    if (!isNews && SKIP_PAGE_SLUGS.has(wpSlug)) {
+      stats.skipped++;
+      continue;
+    }
+
     const link = item.link ?? '';
     const html = cdata(item['content:encoded']) ?? '';
-    const excerpt = (cdata(item['excerpt:encoded']) ?? '').trim();
+    const wpExcerpt = (cdata(item['excerpt:encoded']) ?? '').trim();
     const dateStr = cdata(item['wp:post_date_gmt']) || cdata(item['wp:post_date']);
     const date = dateStr ? new Date(dateStr.replace(' ', 'T') + 'Z') : new Date();
 
-    if (!slug || slug === '') {
-      stats.skipped++;
-      continue;
-    }
-
-    // idioma + slug remap
-    let lang = 'pt';
-    if (SPANISH_SLUGS.has(slug) || slug.endsWith('-espanol') || slug.endsWith('-es')) {
-      lang = 'es';
-    }
-    if (slugRemap[slug]) {
-      lang = slugRemap[slug].lang;
-      slug = slugRemap[slug].slug;
-    }
-
-    // resolve destino
-    const isNews = postType === 'post' || NEWS_PAGE_SLUGS.has(slug);
-    const folder = isNews ? 'noticias' : 'paginas';
-
-    if (slug === 'home' && !isNews) {
-      // home é gerada pelo [lang]/index.astro, não como página standalone
-      stats.skipped++;
-      continue;
-    }
-
     const cleaned = preClean(html);
-    const md = td.turndown(cleaned).trim();
-    const { md: mdRewritten, images } = rewriteImageUrls(md);
+    let md = td.turndown(cleaned).trim();
+    md = fixBrokenQuotes(md);
+    md = rewriteInternalLinks(md, internalRoutes);
+
+    const { md: mdImages, images } = rewriteImageUrls(md);
+    md = mdImages;
     for (const [url, localUrl] of images) imageJobs.set(url, localUrl);
+
+    // Páginas do Elementor abrem com o título em h2 + subtítulo curto:
+    // o layout já exibe título/descrição, então movemos para o front-matter.
+    let description = '';
+    let image = '';
+    if (!isNews) {
+      ({ md, description } = stripLeadingHeading(md));
+    } else {
+      ({ md, image } = extractLeadingImage(md));
+    }
 
     const fm = buildFrontMatter({
       title,
       slug,
       lang,
+      wpSlug,
       date,
-      excerpt: excerpt || extractExcerpt(mdRewritten),
+      description,
+      excerpt: wpExcerpt || extractExcerpt(md),
+      image,
+      order: PAGE_ORDER[slug],
       isNews,
       originalUrl: link,
     });
 
+    const folder = isNews ? 'noticias' : 'paginas';
     const outDir = path.join(ROOT, 'src', 'content', folder, lang);
     await fs.mkdir(outDir, { recursive: true });
     const outFile = path.join(outDir, `${slug}.mdx`);
-    await fs.writeFile(outFile, fm + '\n' + mdRewritten + '\n');
+    await fs.writeFile(outFile, fm + '\n\n' + md + '\n');
     stats[isNews ? 'noticias' : 'paginas']++;
     console.log(`  ✓ ${path.relative(ROOT, outFile)}`);
   }
 
+  // manifest para download posterior (local ou no CI)
+  const manifestPath = path.join(__dirname, 'wp-images.json');
+  const manifest = Object.fromEntries([...imageJobs].sort(([a], [b]) => a.localeCompare(b)));
+  await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
+  console.log(`\n> Manifest de imagens: ${path.relative(ROOT, manifestPath)} (${imageJobs.size} imagens)`);
+
   if (!noImages && imageJobs.size > 0) {
     console.log(`\n> Baixando ${imageJobs.size} imagens…`);
-    await downloadAll(imageJobs);
+    await downloadImages(imageJobs);
   } else if (noImages) {
-    console.log(`\n> --no-images: pulando download de ${imageJobs.size} imagens`);
+    console.log(`> --no-images: pulando download`);
   }
 
   console.log(`\n✓ Concluído: ${stats.paginas} páginas, ${stats.noticias} notícias, ${stats.skipped} ignoradas`);
@@ -169,6 +218,9 @@ function preClean(html) {
   return html
     // remove comentários do Elementor / WP
     .replace(/<!--[\s\S]*?-->/g, '')
+    // cabeçalho do tema vazado no conteúdo (logo + menu de navegação)
+    .replace(/<a [^>]*href="https?:\/\/redalint\.org\/?"[^>]*>\s*<img[^>]*cropped-redalint[^>]*\/?>\s*<\/a>/gi, '')
+    .replace(/<nav\b[\s\S]*?<\/nav>/gi, '')
     // limpa shortcodes mais comuns
     .replace(/\[\/?(?:caption|gallery|embed|vc_[^\]]+)[^\]]*\]/g, '')
     // remove atributos data-*
@@ -176,6 +228,21 @@ function preClean(html) {
     // tira <style>/<script> embutidos
     .replace(/<style[\s\S]*?<\/style>/gi, '')
     .replace(/<script[\s\S]*?<\/script>/gi, '');
+}
+
+// o export do WP corrompeu aspas curvas em `?`: ?alternativo? → “alternativo”
+function fixBrokenQuotes(md) {
+  return md.replace(/(^|[\s(])\?([^?\n]{2,90}?)\?(?=[\s.,;:)])/g, '$1“$2”');
+}
+
+function rewriteInternalLinks(md, internalRoutes) {
+  return md.replace(/\]\((https?:\/\/(?:www\.)?redalint\.org[^)\s]*)\)/g, (m, url) => {
+    const { pathname } = new URL(url);
+    if (pathname.startsWith('/wp-content/')) return m; // imagens: tratadas à parte
+    const slug = pathname.replace(/^\/+|\/+$/g, '');
+    const target = internalRoutes.get(slug);
+    return target ? `](${target})` : m;
+  });
 }
 
 function rewriteImageUrls(md) {
@@ -191,32 +258,29 @@ function rewriteImageUrls(md) {
   return { md: out, images };
 }
 
-async function downloadAll(jobs) {
-  const dest = path.join(ROOT, 'public', 'imagens', 'wp');
-  await fs.mkdir(dest, { recursive: true });
-  let ok = 0;
-  let fail = 0;
-  await Promise.all(
-    [...jobs].map(async ([url, localUrl]) => {
-      const out = path.join(ROOT, 'public', localUrl);
-      try {
-        await fs.access(out);
-        ok++;
-        return; // já existe
-      } catch {}
-      try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const buf = Buffer.from(await res.arrayBuffer());
-        await fs.writeFile(out, buf);
-        ok++;
-      } catch (err) {
-        fail++;
-        console.warn(`  ! falhou ${url}: ${err.message}`);
-      }
-    }),
-  );
-  console.log(`  ${ok} baixadas, ${fail} falhas`);
+// Remove o h2 inicial (título repetido) e captura o subtítulo curto seguinte.
+function stripLeadingHeading(md) {
+  const lines = md.split('\n');
+  let i = 0;
+  while (i < lines.length && lines[i].trim() === '') i++;
+  if (!/^##\s+/.test(lines[i] ?? '')) return { md, description: '' };
+  i++;
+  while (i < lines.length && lines[i].trim() === '') i++;
+  let description = '';
+  const next = lines[i]?.trim() ?? '';
+  // subtítulo: parágrafo curto sem marcação
+  if (next && next.length <= 120 && !/^[#\-!\[>*]|\]\(/.test(next)) {
+    description = next;
+    i++;
+  }
+  return { md: lines.slice(i).join('\n').trim(), description };
+}
+
+// Para notícias: primeira imagem vira front-matter `image` (cards/OG).
+function extractLeadingImage(md) {
+  const m = md.match(/^(?:\[)?!\[[^\]]*\]\(([^)\s]+)\)(?:\]\([^)\s]+\))?\s*/);
+  if (!m) return { md, image: '' };
+  return { md: md.slice(m[0].length).trim(), image: m[1] };
 }
 
 function slugify(s) {
@@ -239,19 +303,22 @@ function extractExcerpt(md, max = 200) {
   return plain.slice(0, max).replace(/\s\S*$/, '') + '…';
 }
 
-function buildFrontMatter({ title, slug, lang, date, excerpt, isNews, originalUrl }) {
+function buildFrontMatter({ title, slug, lang, wpSlug, date, description, excerpt, image, order, isNews, originalUrl }) {
   const lines = [
     '---',
     `title: ${yamlString(title)}`,
     `slug: ${slug}`,
     `lang: ${lang}`,
+    `wpSlug: ${wpSlug}`,
   ];
   if (isNews) {
     lines.push(`date: ${date.toISOString()}`);
     if (excerpt) lines.push(`excerpt: ${yamlString(excerpt)}`);
+    if (image) lines.push(`image: ${yamlString(image)}`);
     lines.push('tags: []');
   } else {
-    if (excerpt) lines.push(`description: ${yamlString(excerpt)}`);
+    if (description) lines.push(`description: ${yamlString(description)}`);
+    if (order != null) lines.push(`order: ${order}`);
     lines.push(`updated: ${date.toISOString()}`);
   }
   if (originalUrl) lines.push(`# original: ${originalUrl}`);

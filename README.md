@@ -53,33 +53,36 @@ npm run dev          # http://localhost:4321/site-redalint/pt/
 npm run build        # gera ./dist com Pagefind
 npm run preview
 npm run typecheck
-npm run convert-wp   # roda scripts/wp-to-mdx.mjs (gera src/content/* + baixa imagens)
+npm run convert-wp        # roda scripts/wp-to-mdx.mjs (gera src/content/* + baixa imagens)
+npm run download-images   # baixa as imagens do manifest scripts/wp-images.json
 ```
 
 ## Migração de conteúdo
 
-O export do WordPress está em `redalint.WordPress.2026-05-14.xml`.
+O export do WordPress está em `redalint.WordPress.2026-05-14.xml`. **Todo o conteúdo
+publicado (10 páginas + 2 notícias, pt/es) já está convertido em `src/content/`.**
 
 ```bash
-npm run convert-wp                     # converte tudo + baixa imagens
+npm run convert-wp                     # reconverte tudo + baixa imagens
 node scripts/wp-to-mdx.mjs --no-images # pula download (offline / dev)
+npm run download-images                # baixa só as imagens (scripts/wp-images.json)
 ```
 
-O script:
+O conversor (`scripts/wp-to-mdx.mjs`):
 
-1. Lê o WXR (`fast-xml-parser`).
-2. Filtra `wp:post_type` ∈ {`page`, `post`} com `status=publish`.
-3. Limpa comentários do Elementor/shortcodes do WP.
-4. Converte HTML → Markdown via Turndown (preserva `<figure>` com legenda).
-5. Reescreve URLs `https://redalint.org/wp-content/...` para `/imagens/wp/<arquivo>` e baixa o original em `public/imagens/wp/`.
-6. Detecta idioma por slug (`*-espanol`/`*-es` → `es`, default `pt`) e remapa slugs (`como-colaborar-espanol` → `como-colaborar` lang=es).
-7. Escreve MDX com front-matter validado pelos schemas Zod em `src/content.config.ts`.
+1. Lê o WXR (`fast-xml-parser`) e filtra `wp:post_type` ∈ {`page`, `post`} com `status=publish`.
+2. Pula `home` e `noticias` (geradas dinamicamente por `[lang]/index.astro` e `[lang]/noticias/`).
+3. Limpa comentários/cabeçalho vazado do Elementor, shortcodes do WP e aspas corrompidas do export (`?...?` → `“...”`).
+4. Converte HTML → Markdown via Turndown (preserva `<figure>` com legenda e link envolvente, ex.: badges Lattes/ORCID).
+5. Reescreve links internos `https://redalint.org/<slug>` para as rotas novas `/<lang>/<slug>/` (o subdomínio `acervo.redalint.org` permanece externo).
+6. Reescreve URLs `https://redalint.org/wp-content/...` para `/imagens/wp/<arquivo>`, gera o manifest `scripts/wp-images.json` e baixa os originais em `public/imagens/wp/`.
+7. Detecta idioma por slug (`*-espanol`/`*-es` → `es`, default `pt`) e remapa slugs (`como-colaborar-espanol` → `como-colaborar` lang=es).
+8. Escreve MDX com front-matter validado pelos schemas Zod em `src/content.config.ts` (inclui `wpSlug` com o slug original, usado nos redirects).
 
-Conteúdo de exemplo já convertido (manualmente, para validar o pipeline):
-
-- `src/content/paginas/pt/institucional.mdx`
-- `src/content/paginas/es/como-colaborar.mdx`
-- `src/content/noticias/pt/lancamento-da-revista-redalint.mdx`
+As imagens **não estão commitadas**: os workflows de CI/deploy rodam
+`node scripts/download-wp-images.mjs` antes do build para baixá-las do WordPress
+ainda no ar. Quando quiser fixá-las no repositório (recomendado antes de desligar
+o WP), rode `npm run download-images` localmente e commite `public/imagens/wp/`.
 
 ## Deploy
 
@@ -93,6 +96,9 @@ Para usar `redalint.org` futuramente: criar `public/CNAME` com `redalint.org`, a
 
 ## SEO e preservação de URLs
 
-URLs do WordPress eram `/<slug>/`. A nova estrutura é `/<lang>/<slug>/`, então URLs antigas mudam. Para preservar links externos, podemos adicionar páginas-stub em `/<slug>/` com `<meta http-equiv="refresh">` + canonical para a rota nova (não criadas neste commit).
+URLs do WordPress eram `/<slug>/`. A nova estrutura é `/<lang>/<slug>/`. Para preservar
+links externos e resultados de busca, `src/pages/[wpSlug].astro` gera stubs em `/<slug>/`
+com `<meta http-equiv="refresh">` + canonical + `noindex` apontando para a rota nova
+(ex.: `/equipe/` → `/pt/equipe/`, `/como-colaborar-espanol/` → `/es/como-colaborar/`).
 
 O `BaseLayout` já emite: canonical, `<link rel="alternate" hreflang>` para todos os idiomas, OG/Twitter, sitemap em `/sitemap.xml`, RSS em `/rss.xml`, e dark/light com script inline (sem FOUC).
