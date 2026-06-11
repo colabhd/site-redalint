@@ -9,11 +9,16 @@ export async function getStaticPaths() {
   const entries = await getCollection('noticias');
   return entries.map((entry) => ({
     params: { lang: entry.data.lang, slug: entrySlug(entry) },
-    props: { entry },
+    props: {
+      entry,
+      availableLangs: entries
+        .filter((e) => entrySlug(e) === entrySlug(entry))
+        .map((e) => e.data.lang),
+    },
   }));
 }
 
-const { entry } = Astro.props;
+const { entry, availableLangs } = Astro.props;
 const lang = entry.data.lang as Lang;
 const { Content } = await render(entry);
 const date = new Intl.DateTimeFormat(LOCALE_MAP[lang], { dateStyle: 'long' }).format(entry.data.date);
@@ -25,6 +30,7 @@ const date = new Intl.DateTimeFormat(LOCALE_MAP[lang], { dateStyle: 'long' }).fo
   description={entry.data.excerpt}
   image={entry.data.image && assetPath(entry.data.image)}
   pathInLang={`noticias/${entrySlug(entry)}`}
+  availableLangs={availableLangs}
 >
   <article class="container mx-auto px-4 py-12 max-w-3xl">
     <p class="opacity-70 text-sm">

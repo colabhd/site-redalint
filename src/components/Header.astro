@@ -6,8 +6,10 @@ import ThemeToggle from '~/components/ThemeToggle.astro';
 interface Props {
   lang: Lang;
   pathInLang?: string;
+  /** Idiomas em que a página atual existe; demais idiomas levam à home. */
+  availableLangs?: Lang[];
 }
-const { lang, pathInLang = '' } = Astro.props;
+const { lang, pathInLang = '', availableLangs = [...LANGUAGES] } = Astro.props;
 
 const navItems = [
   { href: localizedPath(lang, 'institucional'), label: t(lang, 'nav.institucional') },
@@ -78,7 +80,10 @@ const navItems = [
               {
                 LANGUAGES.map((l) => (
                   <li>
-                    <a href={localizedPath(l, pathInLang)} aria-current={l === lang ? 'true' : undefined}>
+                    <a
+                      href={localizedPath(l, availableLangs.includes(l) ? pathInLang : '')}
+                      aria-current={l === lang ? 'true' : undefined}
+                    >
                       {l === 'pt' ? 'Português' : 'Español'}
                     </a>
                   </li>

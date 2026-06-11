@@ -14,6 +14,7 @@ export async function getStaticPaths() {
   const routes = new Map([
     ['home', localizedPath('pt', '')],
     ['noticias', localizedPath('pt', 'noticias')],
+    ['equipe', localizedPath('pt', 'equipe')],
   ]);
   for (const e of paginas) {
     const old = e.data.wpSlug;

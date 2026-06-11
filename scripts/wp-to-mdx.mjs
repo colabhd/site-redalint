@@ -34,8 +34,9 @@ function findDefaultXml() {
 }
 
 // páginas geradas dinamicamente pelo Astro — não viram MDX
-// (home → [lang]/index.astro; noticias → [lang]/noticias/index.astro)
-const SKIP_PAGE_SLUGS = new Set(['home', 'noticias']);
+// (home → [lang]/index.astro; noticias → [lang]/noticias/index.astro;
+//  equipe → [lang]/equipe.astro a partir da collection src/content/equipe/)
+const SKIP_PAGE_SLUGS = new Set(['home', 'noticias', 'equipe']);
 
 const slugRemap = {
   'como-colaborar-espanol': { slug: 'como-colaborar', lang: 'es', title: 'Cómo colaborar' },

@@ -13,7 +13,12 @@ export function getStaticPaths() {
 
 const lang = Astro.params.lang as Lang;
 
-const allNews = await getCollection('noticias', (e) => e.data.lang === lang);
+// sem notícias no idioma: mostra as em português (cards linkam para /pt/)
+let allNews = await getCollection('noticias', (e) => e.data.lang === lang);
+const newsLang = allNews.length === 0 && lang !== 'pt' ? 'pt' : lang;
+if (newsLang !== lang) {
+  allNews = await getCollection('noticias', (e) => e.data.lang === 'pt');
+}
 const latest = allNews
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
@@ -168,7 +173,7 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mt-12">
         {latest.map((n) => (
           <NoticiaCard
-            lang={lang}
+            lang={newsLang}
             slug={entrySlug(n)}
             title={n.data.title}
             date={n.data.date}
