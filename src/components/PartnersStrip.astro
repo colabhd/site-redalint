@@ -1,0 +1,58 @@
+---
+import { t, type Lang } from '~/i18n/translations';
+import { assetPath } from '~/utils/paths';
+
+interface Partner {
+  name: string;
+  href: string;
+  logo: string;
+}
+
+// instituições da rede + financiamento, com os logos já versionados em public/imagens/wp/
+const PARTNERS: Partner[] = [
+  { name: 'UNISINOS', href: 'http://www.unisinos.br', logo: '/imagens/wp/unisinos-300x149.png' },
+  { name: 'UNESP', href: 'https://www2.unesp.br', logo: '/imagens/wp/unesp.png' },
+  { name: 'UNCo', href: 'https://www.uncoma.edu.ar', logo: '/imagens/wp/UNCO-282x300.png' },
+  { name: 'UNS', href: 'https://www.uns.edu.ar/', logo: '/imagens/wp/uns-300x196.jpg' },
+  { name: 'FAPESP', href: 'http://www.fapesp.br', logo: '/imagens/wp/fapesp.png' },
+  { name: 'FAPERGS', href: 'https://fapergs.rs.gov.br', logo: '/imagens/wp/fapergs.png' },
+  { name: 'CNPq', href: 'https://www.gov.br/cnpq', logo: '/imagens/wp/cnpq.jpg' },
+  { name: 'CAPES', href: 'https://www.gov.br/capes/pt-br', logo: '/imagens/wp/capes.png' },
+];
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+---
+
+<section class="py-12 bg-base-200" data-pagefind-ignore>
+  <div class="container mx-auto px-4">
+    <h2 class="section-title text-center text-xl text-base-content/70">
+      {t(lang, 'home.partners_title')}
+    </h2>
+    <ul class="mt-8 flex flex-wrap items-center justify-center gap-8 md:gap-12 list-none p-0">
+      {
+        PARTNERS.map((p) => (
+          <li>
+            <a
+              href={p.href}
+              rel="noopener"
+              target="_blank"
+              aria-label={p.name}
+              class="block opacity-70 hover:opacity-100 transition"
+            >
+              <img
+                src={assetPath(p.logo)}
+                alt={p.name}
+                loading="lazy"
+                decoding="async"
+                class="h-10 md:h-12 w-auto bg-white rounded px-2 py-1"
+              />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
