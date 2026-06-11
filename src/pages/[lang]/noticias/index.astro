@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import { entrySlug } from '~/utils/content';
 import BaseLayout from '~/layouts/BaseLayout.astro';
+import Breadcrumbs from '~/components/Breadcrumbs.astro';
 import NoticiaCard from '~/components/NoticiaCard.astro';
 import { LANGUAGES, t, type Lang } from '~/i18n/translations';
 
@@ -25,6 +26,7 @@ if (fallbackPt) {
 
 <BaseLayout lang={lang} title={t(lang, 'news.title')} pathInLang="noticias">
   <section class="container mx-auto px-4 py-12">
+    <Breadcrumbs lang={lang} trail={[{ label: t(lang, 'news.title') }]} />
     <h1 class="text-3xl md:text-4xl font-bold mb-8">{t(lang, 'news.title')}</h1>
     {fallbackPt && <p class="opacity-70 mb-6 italic">{t(lang, 'news.pt_only')}</p>}
     {noticias.length === 0 ? (

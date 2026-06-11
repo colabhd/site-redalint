@@ -27,6 +27,8 @@ const pt: Dict = {
   'footer.source': 'Código-fonte no GitHub',
   'common.back': 'Voltar',
   'common.know_more': 'Saiba mais',
+  'common.edit_github': 'Editar esta página no GitHub',
+  'home.partners_title': 'Instituições parceiras e apoio',
   'home.welcome': 'Seja Bem Vindo!',
   'home.about_title': 'A REDALINT',
   'home.about_body':
@@ -76,6 +78,8 @@ const es: Dict = {
   'footer.source': 'Código fuente en GitHub',
   'common.back': 'Volver',
   'common.know_more': 'Saber más',
+  'common.edit_github': 'Editar esta página en GitHub',
+  'home.partners_title': 'Instituciones asociadas y apoyo',
   'home.welcome': '¡Bienvenido!',
   'home.about_title': 'La REDALINT',
   'home.about_body':

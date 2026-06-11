@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '~/layouts/BaseLayout.astro';
+import Breadcrumbs from '~/components/Breadcrumbs.astro';
 import { LANGUAGES, t, type Lang } from '~/i18n/translations';
 import { assetPath, localizedPath } from '~/utils/paths';
 
@@ -29,6 +30,7 @@ const rendered = await Promise.all(
   pathInLang="equipe"
 >
   <section class="container mx-auto px-4 py-12 max-w-5xl">
+    <Breadcrumbs lang={lang} trail={[{ label: t(lang, 'nav.equipe') }]} />
     <h1 class="text-3xl md:text-4xl font-bold">{t(lang, 'nav.equipe')} REDALINT</h1>
     <p class="opacity-80 mt-3 text-lg">{t(lang, 'home.team_body')}</p>
 

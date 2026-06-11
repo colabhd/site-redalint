@@ -80,6 +80,18 @@ const ogImage = image
 
     <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
 
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'REDALINT',
+        url: new URL(import.meta.env.BASE_URL, Astro.site).toString(),
+        logo: new URL(`${import.meta.env.BASE_URL}imagens/redalint-logo.svg`.replace(/\/+/g, '/'), Astro.site).toString(),
+        sameAs: ['https://acervo.redalint.org/', 'https://github.com/colabhd/site-redalint'],
+      })}
+    />
+
     <script is:inline>
       (function () {
         try {
