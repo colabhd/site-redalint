@@ -50,7 +50,7 @@ const rendered = await Promise.all(
             <div class="card-body">
               <h2 class="card-title text-2xl text-primary">
                 {membro.data.pagina ? (
-                  <a href={localizedPath('pt', membro.data.pagina)} class="link link-hover">
+                  <a href={localizedPath(membro.data.lang, membro.data.pagina)} class="link link-hover">
                     {membro.data.name}
                   </a>
                 ) : (
@@ -82,7 +82,7 @@ const rendered = await Promise.all(
                   </a>
                 )}
                 {membro.data.pagina && (
-                  <a class="btn btn-primary btn-sm" href={localizedPath('pt', membro.data.pagina)}>
+                  <a class="btn btn-primary btn-sm" href={localizedPath(membro.data.lang, membro.data.pagina)}>
                     {t(lang, 'team.profile')}
                   </a>
                 )}
