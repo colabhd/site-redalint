@@ -38,8 +38,8 @@ const rendered = await Promise.all(
       {
         rendered.map(({ membro, Content }) => (
           <article class="card lg:card-side bg-base-100 border border-base-300 shadow-sm">
-            {membro.data.photo && (
-              <figure class="lg:w-56 shrink-0 bg-base-200">
+            <figure class="lg:w-56 shrink-0 bg-base-200">
+              {membro.data.photo ? (
                 <img
                   src={assetPath(membro.data.photo)}
                   alt={membro.data.name}
@@ -47,8 +47,18 @@ const rendered = await Promise.all(
                   decoding="async"
                   class="w-full h-64 lg:h-full object-cover object-top"
                 />
-              </figure>
-            )}
+              ) : (
+                <div
+                  class="w-full h-40 lg:h-full flex items-center justify-center text-primary/30"
+                  aria-hidden="true"
+                >
+                  <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 21v-1a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7v1" />
+                  </svg>
+                </div>
+              )}
+            </figure>
             <div class="card-body">
               <h2 class="card-title text-2xl text-primary">
                 {membro.data.pagina ? (
