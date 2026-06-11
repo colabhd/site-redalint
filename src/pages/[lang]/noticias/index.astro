@@ -36,6 +36,7 @@ if (fallbackPt) {
         {noticias.map((n) => (
           <NoticiaCard
             lang={fallbackPt ? 'pt' : lang}
+            headingLevel="h2"
             slug={entrySlug(n)}
             title={n.data.title}
             date={n.data.date}

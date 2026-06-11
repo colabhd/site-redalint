@@ -18,7 +18,7 @@ const navItems = [
   { href: localizedPath(lang, 'pesquisas'), label: t(lang, 'nav.pesquisas') },
   { href: localizedPath(lang, 'formacao'), label: t(lang, 'nav.formacao') },
   { href: localizedPath(lang, 'equipe'), label: t(lang, 'nav.equipe') },
-  { href: 'https://acervo.redalint.org/', label: t(lang, 'nav.acervo'), external: true },
+  { href: 'https://acervo.redalint.org/', label: t(lang, 'nav.acervo_short'), external: true },
 ];
 ---
 
@@ -40,7 +40,7 @@ const navItems = [
     <!-- coluna do menu (gradiente índigo→roxo do site original) -->
     <div class="brand-gradient text-white">
       <div class="flex items-center gap-1 h-full px-4 lg:px-6 justify-end lg:justify-between">
-        <nav class="hidden lg:flex items-center gap-1 overflow-x-auto" aria-label="Principal">
+        <nav class="hidden lg:flex items-center gap-1 overflow-x-auto" aria-label={t(lang, 'a11y.nav_main')}>
           {
             navItems.map((item) => (
               <a
