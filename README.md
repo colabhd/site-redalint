@@ -47,6 +47,8 @@ scripts/
   generate-og.mjs                  # gera public/og-default.png
 public/
   favicon.svg, robots.txt, og-default.png
+  imagens/redalint-wordmark.png    # logo oficial (wordmark colorido, header)
+  imagens/redalint-logo-completo.svg # logo oficial completo com mapa (footer/JSON-LD/favicon)
   imagens/wp/                      # imagens baixadas do WP (gerado)
 ```
 

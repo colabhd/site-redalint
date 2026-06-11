@@ -2,6 +2,8 @@
 /**
  * Gera `public/og-default.png` (1200×630), a imagem Open Graph padrão
  * usada pelo BaseLayout quando a página não define imagem própria.
+ * Usa o logo oficial (public/imagens/redalint-logo-completo.svg) sobre
+ * fundo branco, com faixa inferior nas cores da marca.
  *
  * Uso: node scripts/generate-og.mjs
  */
@@ -10,17 +12,37 @@ import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const LOGO = path.join(ROOT, 'public', 'imagens', 'redalint-logo-completo.svg');
 
-const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
-  <rect width="1200" height="630" fill="#4b0082"/>
-  <rect x="0" y="582" width="1200" height="48" fill="#61ce70"/>
-  <text x="90" y="300" font-family="Georgia, 'DejaVu Serif', serif" font-size="120" font-weight="bold" fill="#ffffff" letter-spacing="4">REDALINT</text>
-  <circle cx="852" cy="262" r="18" fill="#61ce70"/>
-  <text x="92" y="380" font-family="'DejaVu Sans', Helvetica, sans-serif" font-size="30" fill="#e8e2f2">Rede de Pesquisadores e Gestores em Internacionalização</text>
-  <text x="92" y="424" font-family="'DejaVu Sans', Helvetica, sans-serif" font-size="30" fill="#e8e2f2">da Educação Superior da América Latina</text>
-  <text x="92" y="520" font-family="'DejaVu Sans', Helvetica, sans-serif" font-size="24" fill="#b9a6d6">redalint.org</text>
-</svg>`;
+// SVG oficial tem viewBox 65×46; density alta para rasterizar nítido
+const logo = await sharp(LOGO, { density: 800 }).resize({ width: 680 }).png().toBuffer();
+const { width: lw, height: lh } = await sharp(logo).metadata();
+
+// faixa inferior com o degradê da marca (cores extraídas do logo)
+const strip = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="36">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#F0C83B"/>
+      <stop offset="0.25" stop-color="#F1563C"/>
+      <stop offset="0.5" stop-color="#C34B9B"/>
+      <stop offset="0.78" stop-color="#00B3C1"/>
+      <stop offset="1" stop-color="#00B36C"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="36" fill="url(#g)"/>
+</svg>`);
+
+const url = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="40">
+  <text x="600" y="28" text-anchor="middle" font-family="'DejaVu Sans', Helvetica, sans-serif" font-size="26" fill="#808285">redalint.org</text>
+</svg>`);
 
 const out = path.join(ROOT, 'public', 'og-default.png');
-await sharp(Buffer.from(svg)).png().toFile(out);
+await sharp({ create: { width: 1200, height: 630, channels: 4, background: '#ffffff' } })
+  .composite([
+    { input: logo, left: Math.round((1200 - lw) / 2), top: Math.round((594 - lh) / 2) - 20 },
+    { input: url, left: 0, top: 530 },
+    { input: strip, left: 0, top: 594 },
+  ])
+  .png()
+  .toFile(out);
 console.log(`✓ ${path.relative(ROOT, out)}`);
