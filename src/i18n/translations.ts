@@ -52,6 +52,10 @@ const pt: Dict = {
   'news.read_more': 'Ler mais',
   'news.published_on': 'Publicado em',
   'news.empty': 'Ainda não há notícias publicadas.',
+  'news.pt_only': 'Estas notícias estão disponíveis apenas em português.',
+  'team.site': 'Página pessoal',
+  'team.profile': 'Ver perfil completo',
+  'team.acervo_team': 'Conheça também a equipe do Acervo REDALINT',
 };
 
 const es: Dict = {
@@ -96,6 +100,10 @@ const es: Dict = {
   'news.read_more': 'Leer más',
   'news.published_on': 'Publicado el',
   'news.empty': 'Aún no hay noticias publicadas.',
+  'news.pt_only': 'Estas noticias están disponibles solo en portugués.',
+  'team.site': 'Página personal',
+  'team.profile': 'Ver perfil completo',
+  'team.acervo_team': 'Conozca también al equipo del Acervo REDALINT',
 };
 
 const DICTS: Record<Lang, Dict> = { pt, es };

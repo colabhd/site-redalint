@@ -45,6 +45,8 @@ const equipe = defineCollection({
     role: z.string().optional(),
     affiliation: z.string().optional(),
     photo: z.string().optional(),
+    /** slug de uma página interna com o perfil completo (ex.: "julieta-abba") */
+    pagina: z.string().optional(),
     order: z.number().default(99),
     links: z
       .object({

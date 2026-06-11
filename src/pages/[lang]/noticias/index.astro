@@ -10,21 +10,30 @@ export function getStaticPaths() {
 }
 
 const lang = Astro.params.lang as Lang;
-const noticias = (await getCollection('noticias', (e) => e.data.lang === lang)).sort(
+let noticias = (await getCollection('noticias', (e) => e.data.lang === lang)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
+
+// sem notícias traduzidas: mostra as em português (cards linkam para /pt/)
+const fallbackPt = lang !== 'pt' && noticias.length === 0;
+if (fallbackPt) {
+  noticias = (await getCollection('noticias', (e) => e.data.lang === 'pt')).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+  );
+}
 ---
 
 <BaseLayout lang={lang} title={t(lang, 'news.title')} pathInLang="noticias">
   <section class="container mx-auto px-4 py-12">
     <h1 class="text-3xl md:text-4xl font-bold mb-8">{t(lang, 'news.title')}</h1>
+    {fallbackPt && <p class="opacity-70 mb-6 italic">{t(lang, 'news.pt_only')}</p>}
     {noticias.length === 0 ? (
       <p class="opacity-70">{t(lang, 'news.empty')}</p>
     ) : (
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {noticias.map((n) => (
           <NoticiaCard
-            lang={lang}
+            lang={fallbackPt ? 'pt' : lang}
             slug={entrySlug(n)}
             title={n.data.title}
             date={n.data.date}

@@ -9,11 +9,16 @@ export async function getStaticPaths() {
   const entries = await getCollection('paginas');
   return entries.map((entry) => ({
     params: { lang: entry.data.lang, slug: entrySlug(entry) },
-    props: { entry },
+    props: {
+      entry,
+      availableLangs: entries
+        .filter((e) => entrySlug(e) === entrySlug(entry))
+        .map((e) => e.data.lang),
+    },
   }));
 }
 
-const { entry } = Astro.props;
+const { entry, availableLangs } = Astro.props;
 const lang = entry.data.lang as Lang;
 const { Content } = await render(entry);
 const slug = entrySlug(entry);
@@ -25,6 +30,7 @@ const slug = entrySlug(entry);
   description={entry.data.description}
   image={entry.data.hero && assetPath(entry.data.hero)}
   pathInLang={slug}
+  availableLangs={availableLangs}
 >
   <article class="container mx-auto px-4 py-12 max-w-3xl">
     <h1 class="text-3xl md:text-4xl font-bold">{entry.data.title}</h1>

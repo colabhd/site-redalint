@@ -22,28 +22,37 @@ src/
   content/
     paginas/{pt,es}/<slug>.mdx     # páginas institucionais
     noticias/{pt,es}/<slug>.mdx    # posts/notícias
-    equipe/<membro>.mdx            # perfis (futuro)
-  layouts/BaseLayout.astro          # SEO, hreflang, theme, header/footer
+    equipe/<membro>.mdx            # perfis da equipe (cards em /[lang]/equipe/)
+  layouts/BaseLayout.astro          # SEO, hreflang (só de traduções existentes), theme
   components/                       # Header, Footer, Hero, NoticiaCard, ThemeToggle…
   pages/
     index.astro                    # redirect → /pt/
+    [wpSlug].astro                 # stubs de redirect das URLs antigas do WP
     [lang]/
       index.astro                  # home por idioma
       [...slug].astro              # páginas
+      equipe.astro                 # cards da equipe (collection equipe)
       noticias/{index,[slug]}.astro
       busca.astro                  # Pagefind UI
     sitemap.xml.ts
     rss.xml.ts
     404.astro
   i18n/translations.ts             # textos de UI (pt/es)
-  styles/global.css
-  utils/paths.ts                   # withBase, localizedPath
+  plugins/rehype-base-url.mjs      # prefixa a base nos links/imagens do markdown
+  styles/global.css                # temas DaisyUI + fontes self-hosted (Fontsource)
+  utils/paths.ts                   # withBase, localizedPath, assetPath
 scripts/
   wp-to-mdx.mjs                    # conversor WXR → MDX
+  download-wp-images.mjs           # baixa imagens do manifest wp-images.json
+  generate-og.mjs                  # gera public/og-default.png
 public/
-  favicon.svg, robots.txt
+  favicon.svg, robots.txt, og-default.png
   imagens/wp/                      # imagens baixadas do WP (gerado)
 ```
+
+Conteúdo sem tradução: o seletor de idiomas leva à home do outro idioma, o
+`hreflang` só é emitido para as traduções que existem, e `/es/noticias/`
+mostra as notícias em português com um aviso, até que sejam traduzidas.
 
 ## Comandos
 
@@ -81,8 +90,15 @@ O conversor (`scripts/wp-to-mdx.mjs`):
 
 As imagens **não estão commitadas**: os workflows de CI/deploy rodam
 `node scripts/download-wp-images.mjs` antes do build para baixá-las do WordPress
-ainda no ar. Quando quiser fixá-las no repositório (recomendado antes de desligar
-o WP), rode `npm run download-images` localmente e commite `public/imagens/wp/`.
+ainda no ar. Para fixá-las no repositório (**faça isso antes de desligar o WP**),
+rode o workflow **Actions → "Fixar imagens do WordPress" → Run workflow**, que
+baixa e commita `public/imagens/wp/` automaticamente — ou rode
+`npm run download-images` localmente e commite.
+
+> Nota: `npm run convert-wp` regenera os MDX a partir do XML e **sobrescreve a
+> curadoria manual** feita em `src/content/` (headings, traduções, correções).
+> O conteúdo versionado no repositório é a fonte de verdade; só reconverta se
+> souber o que está fazendo.
 
 ## Deploy
 
