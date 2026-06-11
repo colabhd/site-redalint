@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { entrySlug } from '~/utils/content';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import NoticiaCard from '~/components/NoticiaCard.astro';
 import { LANGUAGES, t, type Lang } from '~/i18n/translations';
@@ -24,7 +25,7 @@ const noticias = (await getCollection('noticias', (e) => e.data.lang === lang)).
         {noticias.map((n) => (
           <NoticiaCard
             lang={lang}
-            slug={n.data.slug ?? n.id}
+            slug={entrySlug(n)}
             title={n.data.title}
             date={n.data.date}
             excerpt={n.data.excerpt}

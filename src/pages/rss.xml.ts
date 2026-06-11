@@ -2,6 +2,7 @@ import rss from '@astrojs/rss';
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { localizedPath } from '~/utils/paths';
+import { entrySlug } from '~/utils/content';
 
 export const GET: APIRoute = async (context) => {
   const noticias = (await getCollection('noticias')).sort(
@@ -17,7 +18,7 @@ export const GET: APIRoute = async (context) => {
       title: n.data.title,
       pubDate: n.data.date,
       description: n.data.excerpt ?? '',
-      link: localizedPath(n.data.lang, `noticias/${n.data.slug ?? n.id}`),
+      link: localizedPath(n.data.lang, `noticias/${entrySlug(n)}`),
       categories: n.data.tags,
     })),
   });

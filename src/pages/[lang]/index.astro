@@ -5,6 +5,7 @@ import SectionBand from '~/components/SectionBand.astro';
 import NoticiaCard from '~/components/NoticiaCard.astro';
 import { LANGUAGES, t, type Lang } from '~/i18n/translations';
 import { localizedPath } from '~/utils/paths';
+import { entrySlug } from '~/utils/content';
 
 export function getStaticPaths() {
   return LANGUAGES.map((lang) => ({ params: { lang } }));
@@ -168,7 +169,7 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
         {latest.map((n) => (
           <NoticiaCard
             lang={lang}
-            slug={n.data.slug ?? n.id}
+            slug={entrySlug(n)}
             title={n.data.title}
             date={n.data.date}
             excerpt={n.data.excerpt}

@@ -3,12 +3,17 @@ import { glob } from 'astro/loaders';
 
 const langField = z.enum(['pt', 'es']);
 
+// id = caminho do arquivo (ex.: "pt/como-colaborar"). Sem isso, o glob loader
+// usa o `slug` do front-matter como id, colidindo entre idiomas.
+const idFromPath = ({ entry }: { entry: string }) => entry.replace(/\.(md|mdx)$/, '');
+
 const paginas = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/paginas' }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/paginas', generateId: idFromPath }),
   schema: z.object({
     title: z.string(),
     lang: langField,
     slug: z.string().optional(),
+    wpSlug: z.string().optional(),
     description: z.string().optional(),
     order: z.number().default(99),
     hero: z.string().optional(),
@@ -17,11 +22,12 @@ const paginas = defineCollection({
 });
 
 const noticias = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/noticias' }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/noticias', generateId: idFromPath }),
   schema: z.object({
     title: z.string(),
     lang: langField,
     slug: z.string().optional(),
+    wpSlug: z.string().optional(),
     date: z.coerce.date(),
     excerpt: z.string().optional(),
     image: z.string().optional(),

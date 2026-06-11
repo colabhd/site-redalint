@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { LANGUAGES } from '~/i18n/translations';
 import { localizedPath } from '~/utils/paths';
+import { entrySlug } from '~/utils/content';
 
 export const GET: APIRoute = async ({ site }) => {
   if (!site) throw new Error('astro.config.mjs `site` must be set');
@@ -15,13 +16,13 @@ export const GET: APIRoute = async ({ site }) => {
 
   const paginas = await getCollection('paginas');
   for (const p of paginas) {
-    const slug = p.data.slug ?? p.id;
+    const slug = entrySlug(p);
     urls.add(new URL(localizedPath(p.data.lang, slug), site).toString());
   }
 
   const noticias = await getCollection('noticias');
   for (const n of noticias) {
-    const slug = n.data.slug ?? n.id;
+    const slug = entrySlug(n);
     urls.add(new URL(localizedPath(n.data.lang, `noticias/${slug}`), site).toString());
   }
 
