@@ -88,12 +88,11 @@ O conversor (`scripts/wp-to-mdx.mjs`):
 7. Detecta idioma por slug (`*-espanol`/`*-es` → `es`, default `pt`) e remapa slugs (`como-colaborar-espanol` → `como-colaborar` lang=es).
 8. Escreve MDX com front-matter validado pelos schemas Zod em `src/content.config.ts` (inclui `wpSlug` com o slug original, usado nos redirects).
 
-As imagens **não estão commitadas**: os workflows de CI/deploy rodam
-`node scripts/download-wp-images.mjs` antes do build para baixá-las do WordPress
-ainda no ar. Para fixá-las no repositório (**faça isso antes de desligar o WP**),
-rode o workflow **Actions → "Fixar imagens do WordPress" → Run workflow**, que
-baixa e commita `public/imagens/wp/` automaticamente — ou rode
-`npm run download-images` localmente e commite.
+As imagens do WordPress **estão commitadas** em `public/imagens/wp/` — o site não
+depende mais do WP antigo estar no ar. Se novas imagens entrarem no manifest
+(`scripts/wp-images.json`), o workflow **Actions → "Fixar imagens do WordPress"**
+baixa e commita as faltantes (roda manualmente ou em push de branches `claude/**`
+que alterem o manifest); localmente, `npm run download-images`.
 
 > Nota: `npm run convert-wp` regenera os MDX a partir do XML e **sobrescreve a
 > curadoria manual** feita em `src/content/` (headings, traduções, correções).

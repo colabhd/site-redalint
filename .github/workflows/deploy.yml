@@ -24,8 +24,6 @@ jobs:
           node-version: lts/*
           cache: npm
       - run: npm ci
-      - name: Baixar imagens do WordPress (faltantes)
-        run: node scripts/download-wp-images.mjs
       - name: Build
         run: npm run build
         env:

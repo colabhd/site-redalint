@@ -15,6 +15,5 @@ jobs:
           node-version: lts/*
           cache: npm
       - run: npm ci
-      - run: node scripts/download-wp-images.mjs
       - run: npm run typecheck
       - run: npm run build
