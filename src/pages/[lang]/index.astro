@@ -34,30 +34,32 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
   pathInLang=""
 >
   <!-- HERO imersivo -->
-  <section class="relative overflow-hidden brand-gradient text-white">
+  <section class="relative overflow-hidden bg-base-100 border-b border-base-200">
     <img
       src={mapImg}
       alt=""
       aria-hidden="true"
-      class="pointer-events-none absolute -right-10 top-1/2 -translate-y-1/2 h-[120%] w-auto opacity-25 hidden md:block"
+      class="pointer-events-none absolute right-0 lg:-right-10 top-1/2 -translate-y-1/2 h-[115%] w-auto hidden md:block"
       loading="eager"
       decoding="async"
       onerror="this.style.display='none'"
     />
-    <div class="container mx-auto px-4 py-24 md:py-32 relative">
+    <!-- véu branco à esquerda para manter o texto legível sobre o mapa -->
+    <div class="absolute inset-0 hidden md:block bg-gradient-to-r from-base-100 via-base-100/85 to-transparent"></div>
+    <div class="container mx-auto px-4 py-20 md:py-28 relative">
       <div class="max-w-2xl">
-        <p class="font-bold uppercase tracking-[0.2em] text-sm text-white/80">REDALINT</p>
-        <h1 class="font-display text-4xl md:text-6xl font-bold mt-4 leading-[1.05] text-balance">
+        <p class="font-bold uppercase tracking-[0.2em] text-sm text-accent">REDALINT</p>
+        <h1 class="font-display text-4xl md:text-6xl font-bold mt-4 leading-[1.05] text-balance text-primary">
           {t(lang, 'home.welcome')}
         </h1>
-        <p class="mt-6 text-lg md:text-xl text-white/90 text-balance">
+        <p class="mt-6 text-lg md:text-xl opacity-80 text-balance">
           {t(lang, 'site.tagline')}
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
-          <a class="btn btn-lg bg-white text-primary border-none hover:bg-white/90" href={localizedPath(lang, 'institucional')}>
+          <a class="btn btn-lg btn-primary" href={localizedPath(lang, 'institucional')}>
             {t(lang, 'home.cta_institucional')}
           </a>
-          <a class="btn btn-lg btn-outline text-white border-white/60 hover:bg-white/10 hover:border-white" href="https://acervo.redalint.org/" rel="noopener" target="_blank">
+          <a class="btn btn-lg btn-outline btn-primary" href="https://acervo.redalint.org/" rel="noopener" target="_blank">
             {t(lang, 'nav.acervo')} ↗
           </a>
         </div>
