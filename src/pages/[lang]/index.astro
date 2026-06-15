@@ -46,7 +46,7 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
     />
     <!-- véu branco à esquerda para manter o texto legível sobre o mapa -->
     <div class="absolute inset-0 hidden md:block bg-gradient-to-r from-base-100 via-base-100/85 to-transparent"></div>
-    <div class="container mx-auto px-4 py-20 md:py-28 relative">
+    <div class="container mx-auto px-4 py-12 md:py-28 relative">
       <div class="max-w-2xl">
         <p class="font-bold uppercase tracking-[0.2em] text-sm text-accent">REDALINT</p>
         <h1 class="font-display text-4xl md:text-6xl font-bold mt-4 leading-[1.05] text-balance text-primary">
@@ -55,7 +55,7 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
         <p class="mt-6 text-lg md:text-xl opacity-80 text-balance">
           {t(lang, 'site.tagline')}
         </p>
-        <div class="mt-8 flex flex-wrap gap-3">
+        <div class="mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3">
           <a class="btn btn-lg btn-primary" href={localizedPath(lang, 'institucional')}>
             {t(lang, 'home.cta_institucional')}
           </a>
@@ -64,6 +64,16 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
           </a>
         </div>
       </div>
+      <!-- mapa no mobile (abaixo do texto, já que o de fundo só aparece no desktop) -->
+      <img
+        src={mapImg}
+        alt=""
+        aria-hidden="true"
+        class="md:hidden mx-auto mt-10 h-64 w-auto"
+        loading="eager"
+        decoding="async"
+        onerror="this.style.display='none'"
+      />
     </div>
   </section>
 
