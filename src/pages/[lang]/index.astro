@@ -33,50 +33,48 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
   description={t(lang, 'site.tagline')}
   pathInLang=""
 >
-  <!-- HERO -->
-  <section class="relative overflow-hidden bg-base-200">
-    <div class="container mx-auto px-4 py-20 md:py-28 grid md:grid-cols-2 gap-10 items-center">
-      <div>
-        <p class="text-primary font-bold uppercase tracking-widest text-sm">REDALINT</p>
-        <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-primary mt-3 leading-tight text-balance">
+  <!-- HERO imersivo -->
+  <section class="relative overflow-hidden brand-gradient text-white">
+    <img
+      src={mapImg}
+      alt=""
+      aria-hidden="true"
+      class="pointer-events-none absolute -right-10 top-1/2 -translate-y-1/2 h-[120%] w-auto opacity-25 hidden md:block"
+      loading="eager"
+      decoding="async"
+      onerror="this.style.display='none'"
+    />
+    <div class="container mx-auto px-4 py-24 md:py-32 relative">
+      <div class="max-w-2xl">
+        <p class="font-bold uppercase tracking-[0.2em] text-sm text-white/80">REDALINT</p>
+        <h1 class="font-display text-4xl md:text-6xl font-bold mt-4 leading-[1.05] text-balance">
           {t(lang, 'home.welcome')}
         </h1>
-        <p class="mt-6 text-lg opacity-80 text-balance">
+        <p class="mt-6 text-lg md:text-xl text-white/90 text-balance">
           {t(lang, 'site.tagline')}
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
-          <a class="btn btn-primary" href={localizedPath(lang, 'institucional')}>
+          <a class="btn btn-lg bg-white text-primary border-none hover:bg-white/90" href={localizedPath(lang, 'institucional')}>
             {t(lang, 'home.cta_institucional')}
           </a>
-          <a class="btn btn-outline btn-primary" href="https://acervo.redalint.org/" rel="noopener" target="_blank">
+          <a class="btn btn-lg btn-outline text-white border-white/60 hover:bg-white/10 hover:border-white" href="https://acervo.redalint.org/" rel="noopener" target="_blank">
             {t(lang, 'nav.acervo')} ↗
           </a>
         </div>
-      </div>
-      <div class="hidden md:flex justify-center">
-        <img
-          src={mapImg}
-          alt=""
-          aria-hidden="true"
-          class="max-h-[420px] w-auto rounded-box bg-white p-4"
-          loading="eager"
-          decoding="async"
-          onerror="this.style.display='none'"
-        />
       </div>
     </div>
   </section>
 
   <!-- QUEM SOMOS -->
-  <SectionBand variant="primary">
+  <SectionBand>
     <div class="max-w-3xl mx-auto text-center">
-      <h2 class="section-title text-3xl md:text-4xl">{t(lang, 'home.about_title')}</h2>
+      <h2 class="section-title text-3xl md:text-4xl text-primary">{t(lang, 'home.about_title')}</h2>
       <div class="section-divider mx-auto mt-4"></div>
-      <p class="mt-6 text-lg leading-relaxed opacity-95">
+      <p class="mt-6 text-lg leading-relaxed opacity-80">
         {t(lang, 'home.about_body')}
       </p>
       <div class="mt-8">
-        <a class="btn bg-base-100 text-primary border-none hover:bg-base-200" href={localizedPath(lang, 'institucional')}>
+        <a class="btn btn-primary" href={localizedPath(lang, 'institucional')}>
           {t(lang, 'home.cta_institucional')}
         </a>
       </div>
