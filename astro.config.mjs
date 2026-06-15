@@ -4,10 +4,10 @@ import tailwindcss from '@tailwindcss/vite';
 import pagefind from 'astro-pagefind';
 import rehypeBaseUrl from './src/plugins/rehype-base-url.mjs';
 
-const base = '/site-redalint';
+const base = '/';
 
 export default defineConfig({
-  site: 'https://colabhd.github.io',
+  site: 'https://redalint.org',
   base,
   trailingSlash: 'always',
   output: 'static',

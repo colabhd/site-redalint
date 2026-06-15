@@ -2,7 +2,7 @@
 
 Site da **REDALINT** — Rede de Pesquisadores e Gestores em Internacionalização da Educação Superior da América Latina.
 
-Migração do site WordPress (https://redalint.org/) para uma stack estática moderna baseada em **Astro**, hospedada no **GitHub Pages**.
+Migração do site WordPress (https://redalint.org/) para uma stack estática moderna baseada em **Astro**, hospedada na **Cloudflare Pages**.
 
 > Inspirado em [cpps-unesp/site-cpps](https://github.com/cpps-unesp/site-cpps).
 
@@ -101,15 +101,24 @@ que alterem o manifest); localmente, `npm run download-images`.
 > O conteúdo versionado no repositório é a fonte de verdade; só reconverta se
 > souber o que está fazendo.
 
-## Deploy
+## Deploy (Cloudflare Pages)
 
-GitHub Pages a partir de `main` via `.github/workflows/deploy.yml`. Para ativar:
+O site é servido na raiz do domínio (`https://redalint.org`) — `base: '/'` e
+`site: 'https://redalint.org'` em `astro.config.mjs`.
 
-1. Em **Settings → Pages**, selecionar **Source: GitHub Actions**.
-2. Fazer merge para `main` — o workflow faz build (`npm run build`) e publica `./dist`.
-3. URL: `https://colabhd.github.io/site-redalint/`.
+No painel da Cloudflare:
 
-Para usar `redalint.org` futuramente: criar `public/CNAME` com `redalint.org`, ajustar `site`/`base` em `astro.config.mjs`, e apontar DNS (`ALIAS`/`A` records do GitHub Pages).
+1. **Workers & Pages → Create → Pages → Connect to Git** e escolher `colabhd/site-redalint` (branch `main`).
+2. Build settings:
+   - **Build command:** `npm run build`
+   - **Output directory:** `dist`
+   - **Framework preset:** Astro
+   - Variável de ambiente **`NODE_VERSION` = `22`** (também fixada em `.nvmrc`).
+3. **Save and Deploy** — sai num endereço `*.pages.dev`.
+4. **Custom domains → Set up a domain** → `redalint.org` (e `www`, se quiser). A Cloudflare cria os registros DNS automaticamente se o domínio já estiver na conta.
+
+A cada push em `main`, a Cloudflare rebuilda e publica. O build roda `astro build`
++ Pagefind; as imagens já estão versionadas em `public/imagens/`.
 
 ## SEO e preservação de URLs
 
