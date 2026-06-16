@@ -2,7 +2,6 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import Breadcrumbs from '~/components/Breadcrumbs.astro';
-import EditOnGitHub from '~/components/EditOnGitHub.astro';
 import { LOCALE_MAP, t, type Lang } from '~/i18n/translations';
 import { assetPath, localizedPath } from '~/utils/paths';
 import { entrySlug } from '~/utils/content';
@@ -74,6 +73,5 @@ const date = new Intl.DateTimeFormat(LOCALE_MAP[lang], { dateStyle: 'long' }).fo
     <div class="prose max-w-none mt-8">
       <Content />
     </div>
-    <EditOnGitHub lang={lang} collection="noticias" slug={entrySlug(entry)} />
   </article>
 </BaseLayout>
