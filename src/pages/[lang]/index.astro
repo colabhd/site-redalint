@@ -139,35 +139,6 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
     </div>
   </SectionBand>
 
-  <!-- PROJETOS & PESQUISAS / PUBLICAÇÕES -->
-  <SectionBand>
-    <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-      <a href={localizedPath(lang, 'pesquisas')} class="group bg-base-100 border border-base-300 rounded-box p-8 hover:border-primary hover:shadow-md transition-all flex flex-col">
-        <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
-            <rect x="9" y="3" width="6" height="4" rx="1"/>
-            <path d="M9 12h6M9 16h6"/>
-          </svg>
-        </div>
-        <h2 class="section-title text-xl md:text-2xl text-primary mt-5">{t(lang, 'home.research_title')}</h2>
-        <p class="mt-3 opacity-80 flex-1">{t(lang, 'home.research_body')}</p>
-        <span class="mt-5 text-primary font-medium group-hover:underline underline-offset-4">{t(lang, 'home.cta_pesquisas')} →</span>
-      </a>
-      <a href={localizedPath(lang, 'publicacoes')} class="group bg-base-100 border border-base-300 rounded-box p-8 hover:border-primary hover:shadow-md transition-all flex flex-col">
-        <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-          </svg>
-        </div>
-        <h2 class="section-title text-xl md:text-2xl text-primary mt-5">{t(lang, 'home.publications_title')}</h2>
-        <p class="mt-3 opacity-80 flex-1">{t(lang, 'home.publications_body')}</p>
-        <span class="mt-5 text-primary font-medium group-hover:underline underline-offset-4">{t(lang, 'home.cta_publicacoes')} →</span>
-      </a>
-    </div>
-  </SectionBand>
-
   <!-- INICIATIVAS -->
   <SectionBand variant="brand">
     <div class="text-center">
@@ -202,6 +173,35 @@ const mapImg = `${import.meta.env.BASE_URL}imagens/wp/mapa-america-latina02-768x
           {t(lang, 'home.cta_acervo')} ↗
         </a>
       </article>
+    </div>
+  </SectionBand>
+
+  <!-- PROJETOS & PESQUISAS / PUBLICAÇÕES -->
+  <SectionBand>
+    <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+      <a href={localizedPath(lang, 'pesquisas')} class="group bg-base-100 border border-base-300 rounded-box p-8 hover:border-primary hover:shadow-md transition-all flex flex-col">
+        <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+            <rect x="9" y="3" width="6" height="4" rx="1"/>
+            <path d="M9 12h6M9 16h6"/>
+          </svg>
+        </div>
+        <h2 class="section-title text-xl md:text-2xl text-primary mt-5">{t(lang, 'home.research_title')}</h2>
+        <p class="mt-3 opacity-80 flex-1">{t(lang, 'home.research_body')}</p>
+        <span class="mt-5 text-primary font-medium group-hover:underline underline-offset-4">{t(lang, 'home.cta_pesquisas')} →</span>
+      </a>
+      <a href={localizedPath(lang, 'publicacoes')} class="group bg-base-100 border border-base-300 rounded-box p-8 hover:border-primary hover:shadow-md transition-all flex flex-col">
+        <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+        </div>
+        <h2 class="section-title text-xl md:text-2xl text-primary mt-5">{t(lang, 'home.publications_title')}</h2>
+        <p class="mt-3 opacity-80 flex-1">{t(lang, 'home.publications_body')}</p>
+        <span class="mt-5 text-primary font-medium group-hover:underline underline-offset-4">{t(lang, 'home.cta_publicacoes')} →</span>
+      </a>
     </div>
   </SectionBand>
 
