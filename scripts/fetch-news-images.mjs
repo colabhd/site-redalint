@@ -50,47 +50,16 @@ async function main() {
     console.warn(`! PROSUL: ${err.message}`);
   }
 
-  // 2) Capa do nº 7 — adaptação 16:9 sobre o gradiente da marca
+  // 2) Capa do nº — salva o original no repositório (fonte para a arte do banner)
   try {
     const buf = await download(COVER_URL);
-    const W = 1200;
-    const H = 675;
-    const coverH = 545;
-    const cover = await sharp(buf).resize({ height: coverH }).toBuffer();
-    const cw = (await sharp(cover).metadata()).width;
-    const pad = 12;
-
-    const bg = Buffer.from(
-      `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="g" x1="0" y1="1" x2="1" y2="0">
-            <stop offset="0.1" stop-color="#4b0082"/>
-            <stop offset="1" stop-color="#7353ba"/>
-          </linearGradient>
-        </defs>
-        <rect width="${W}" height="${H}" fill="url(#g)"/>
-      </svg>`,
-    );
-    const frame = await sharp({
-      create: { width: cw + pad * 2, height: coverH + pad * 2, channels: 4, background: '#ffffff' },
-    })
-      .png()
-      .toBuffer();
-
-    const left = Math.round((W - cw) / 2);
-    const top = Math.round((H - coverH) / 2);
-
-    await sharp(bg)
-      .composite([
-        { input: frame, left: left - pad, top: top - pad },
-        { input: cover, left, top },
-      ])
-      .jpeg({ quality: 85 })
-      .toFile(path.join(OUT, 'revista-n7.jpg'));
-    console.log('✓ revista-n7.jpg');
+    const srcDir = path.join(ROOT, 'scripts', 'assets');
+    await fs.mkdir(srcDir, { recursive: true });
+    await sharp(buf).png().toFile(path.join(srcDir, 'revista-cover.png'));
+    console.log('✓ scripts/assets/revista-cover.png (capa original)');
   } catch (err) {
     fail++;
-    console.warn(`! Capa nº 7: ${err.message}`);
+    console.warn(`! Capa: ${err.message}`);
   }
 
   if (fail > 0) {
