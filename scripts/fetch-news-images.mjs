@@ -94,8 +94,8 @@ async function main() {
   }
 
   if (fail > 0) {
-    console.warn(`\n! ${fail} imagem(ns) não baixada(s).`);
-    process.exit(1);
+    // não falha o job: o que foi gerado deve ser commitado mesmo assim
+    console.warn(`\n! ${fail} imagem(ns) não baixada(s) — seguindo com o que foi gerado.`);
   }
 }
 
