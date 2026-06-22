@@ -1,0 +1,39 @@
+name: Imagens das notícias
+
+# Baixa as imagens externas das notícias e gera as versões usadas no site
+# em public/imagens/noticias/ (a do MCTI/PROSUL e a adaptação da capa da
+# Revista). Roda manualmente ou ao alterar o script numa branch de trabalho.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths:
+      - scripts/fetch-news-images.mjs
+      - .github/workflows/fetch-news-images.yml
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - run: npm ci
+      - name: Baixar e adaptar imagens
+        run: node scripts/fetch-news-images.mjs
+      - name: Commitar imagens
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/imagens/noticias scripts/assets
+          if git diff --cached --quiet; then
+            echo "Nenhuma imagem nova para commitar."
+          else
+            git commit -m "chore: imagens-fonte das notícias (capa Revista, PROSUL)"
+            git push
+          fi
