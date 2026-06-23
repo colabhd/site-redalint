@@ -1,0 +1,39 @@
+name: Logos das universidades
+
+# Baixa os logos das universidades da rede (Wikimedia/Wikipédia) e os
+# commita em public/imagens/parceiros/. Roda manualmente ou ao alterar o
+# script numa branch de trabalho.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths:
+      - scripts/fetch-uni-logos.mjs
+      - .github/workflows/fetch-uni-logos.yml
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - run: npm ci
+      - name: Baixar e normalizar logos
+        run: node scripts/fetch-uni-logos.mjs
+      - name: Commitar logos
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/imagens/parceiros
+          if git diff --cached --quiet; then
+            echo "Nenhum logo novo para commitar."
+          else
+            git commit -m "chore: logos das universidades (UFSC, UDP, UNSAM, UEPA)"
+            git push
+          fi
