@@ -38,12 +38,13 @@
 
 /* imagens do conteúdo migrado: limita altura e mantém proporção;
    imagens com link (badges Lattes/ORCID, logos, ícone de download)
-   viram vinhetas pequenas alinhadas em linha */
-.prose img {
+   viram vinhetas pequenas alinhadas em linha. Escopado a parágrafos
+   para não afetar componentes embutidos (ex.: órbita de logos). */
+.prose p img {
   width: auto;
   max-height: 28rem;
 }
-.prose a img {
+.prose p a img {
   display: inline-block;
   max-height: 4.5rem;
   margin: 0.25rem 0.75rem 0.25rem 0;
