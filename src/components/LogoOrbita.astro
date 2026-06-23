@@ -1,0 +1,93 @@
+---
+/**
+ * Órbita de instituições: logo da REDALINT ao centro e as universidades
+ * da rede em volta, em caixas de tamanho uniforme. Fonte única da lista.
+ *
+ * Para manter: basta adicionar/remover um item em `UNIS` — as posições
+ * no anel são recalculadas automaticamente. No mobile vira logo + grade.
+ */
+import { assetPath } from '~/utils/paths';
+
+interface Props {
+  /** lado do palco em px (desktop). Padrão 540. */
+  size?: number;
+  class?: string;
+}
+const { size = 540, class: cls = '' } = Astro.props;
+
+const UNIS = [
+  { name: 'UNCo', href: 'https://www.uncoma.edu.ar', logo: '/imagens/wp/UNCO-282x300.png' },
+  { name: 'UNS', href: 'https://www.uns.edu.ar/', logo: '/imagens/wp/uns-300x196.jpg' },
+  { name: 'UNSAM', href: 'https://www.unsam.edu.ar', logo: '/imagens/parceiros/unsam.png' },
+  { name: 'UNESP', href: 'https://www2.unesp.br', logo: '/imagens/wp/unesp.png' },
+  { name: 'UCS', href: 'https://www.ucs.br', logo: '/imagens/parceiros/ucs.png' },
+  { name: 'UFPel', href: 'https://portal.ufpel.edu.br', logo: '/imagens/parceiros/ufpel.png' },
+  { name: 'UFSC', href: 'https://ufsc.br', logo: '/imagens/parceiros/ufsc.png' },
+  { name: 'UEPA', href: 'https://www.uepa.br', logo: '/imagens/parceiros/uepa.png' },
+  { name: 'UCN', href: 'https://www.ucn.cl', logo: '/imagens/parceiros/ucn.png' },
+  { name: 'UDP', href: 'https://www.udp.cl', logo: '/imagens/parceiros/udp.png' },
+];
+
+const c = size / 2;
+const R = size * 0.37;
+const chip = Math.round(size * 0.17);
+const center = Math.round(size * 0.3);
+const wordmark = assetPath('/imagens/redalint-wordmark.png');
+const orbit = UNIS.map((u, i) => {
+  const a = (i / UNIS.length) * 2 * Math.PI - Math.PI / 2;
+  return { ...u, x: c + R * Math.cos(a), y: c + R * Math.sin(a) };
+});
+---
+
+<div class={cls}>
+  <!-- DESKTOP: órbita -->
+  <div class="relative mx-auto hidden md:block" style={`width:${size}px;height:${size}px;max-width:100%`} aria-hidden="true">
+    <svg class="absolute inset-0 w-full h-full text-primary/15" viewBox={`0 0 ${size} ${size}`}>
+      {orbit.map((u) => <line x1={c} y1={c} x2={u.x} y2={u.y} stroke="currentColor" stroke-width="1" />)}
+    </svg>
+    {
+      orbit.map((u) => (
+        <a
+          href={u.href}
+          rel="noopener"
+          target="_blank"
+          title={u.name}
+          class="absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-base-100 border border-base-300 shadow-sm flex items-center justify-center transition-transform hover:scale-110"
+          style={`left:${u.x}px;top:${u.y}px;width:${chip}px;height:${chip}px;padding:${Math.round(chip * 0.18)}px`}
+        >
+          <img src={assetPath(u.logo)} alt={u.name} class="max-w-[82%] max-h-[82%] object-contain" />
+        </a>
+      ))
+    }
+    <div
+      class="absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary shadow-lg flex items-center justify-center"
+      style={`left:${c}px;top:${c}px;width:${center}px;height:${center}px;padding:${Math.round(center * 0.22)}px`}
+    >
+      <img src={wordmark} alt="REDALINT" class="w-full object-contain brightness-0 invert" />
+    </div>
+  </div>
+
+  <!-- MOBILE: logo + grade -->
+  <div class="md:hidden">
+    <div class="mx-auto w-36 h-36 rounded-full bg-primary shadow flex items-center justify-center p-5 mb-6">
+      <img src={wordmark} alt="REDALINT" class="w-full object-contain brightness-0 invert" />
+    </div>
+    <ul class="grid grid-cols-3 gap-3 list-none p-0 m-0">
+      {
+        UNIS.map((u) => (
+          <li>
+            <a
+              href={u.href}
+              rel="noopener"
+              target="_blank"
+              title={u.name}
+              class="aspect-square rounded-box bg-base-100 border border-base-300 flex items-center justify-center p-3"
+            >
+              <img src={assetPath(u.logo)} alt={u.name} class="max-w-[80%] max-h-[80%] object-contain" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>
