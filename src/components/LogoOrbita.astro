@@ -29,10 +29,11 @@ const UNIS = [
 ];
 
 const c = size / 2;
-const R = size * 0.37;
-const chip = Math.round(size * 0.17);
-const center = Math.round(size * 0.3);
+const R = size * 0.38;
+const chip = Math.round(size * 0.165);
+const center = Math.round(size * 0.42);
 const wordmark = assetPath('/imagens/redalint-wordmark.png');
+const mapa = assetPath('/imagens/wp/mapa-america-latina02-768x937.png');
 const orbit = UNIS.map((u, i) => {
   const a = (i / UNIS.length) * 2 * Math.PI - Math.PI / 2;
   return { ...u, x: c + R * Math.cos(a), y: c + R * Math.sin(a) };
@@ -60,17 +61,19 @@ const orbit = UNIS.map((u, i) => {
       ))
     }
     <div
-      class="absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-base-100 ring-4 ring-primary/20 shadow-xl flex items-center justify-center"
-      style={`left:${c}px;top:${c}px;width:${center}px;height:${center}px;padding:${Math.round(center * 0.18)}px`}
+      class="absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-base-100 ring-4 ring-primary/15 shadow-xl flex flex-col items-center justify-center gap-1.5"
+      style={`left:${c}px;top:${c}px;width:${center}px;height:${center}px;padding:${Math.round(center * 0.16)}px`}
     >
-      <img src={wordmark} alt="REDALINT" class="w-[90%] object-contain" />
+      <img src={mapa} alt="" class="object-contain" style="max-height:60%" />
+      <img src={wordmark} alt="REDALINT" class="w-[80%] object-contain" />
     </div>
   </div>
 
   <!-- MOBILE: logo + grade -->
   <div class="md:hidden">
-    <div class="mx-auto w-44 h-44 rounded-full bg-base-100 ring-4 ring-primary/20 shadow-lg flex items-center justify-center p-6 mb-6">
-      <img src={wordmark} alt="REDALINT" class="w-[90%] object-contain" />
+    <div class="mx-auto w-52 h-52 rounded-full bg-base-100 ring-4 ring-primary/15 shadow-lg flex flex-col items-center justify-center gap-1.5 p-6 mb-6">
+      <img src={mapa} alt="" class="object-contain" style="max-height:60%" />
+      <img src={wordmark} alt="REDALINT" class="w-[78%] object-contain" />
     </div>
     <ul class="grid grid-cols-3 gap-3 list-none p-0 m-0">
       {
