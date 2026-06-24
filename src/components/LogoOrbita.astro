@@ -42,22 +42,32 @@ const orbit = UNIS.map((u, i) => {
 
 <div class={cls}>
   <!-- DESKTOP: órbita -->
-  <div class="relative mx-auto hidden md:block" style={`width:${size}px;height:${size}px;max-width:100%`} aria-hidden="true">
-    <svg class="absolute inset-0 w-full h-full text-primary/15" viewBox={`0 0 ${size} ${size}`}>
+  <div class="relative mx-auto hidden md:block" style={`width:${size}px;height:${size}px;max-width:100%`}>
+    <svg class="absolute inset-0 w-full h-full text-primary/15" viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
       {orbit.map((u) => <line x1={c} y1={c} x2={u.x} y2={u.y} stroke="currentColor" stroke-width="1" />)}
     </svg>
     {
       orbit.map((u) => (
         <a
           href={u.href}
-          rel="noopener"
+          rel="noopener noreferrer"
           target="_blank"
           title={u.name}
-          class="absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-base-100 border border-base-300 shadow-sm flex items-center justify-center transition-transform hover:scale-110"
+          aria-label={u.name}
+          class="absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-base-100 border border-base-300 shadow-sm flex items-center justify-center transition-transform hover:scale-110 hover:border-primary/40"
           style={`left:${u.x}px;top:${u.y}px;width:${chip}px;height:${chip}px;padding:${Math.round(chip * 0.18)}px`}
         >
-          <img src={assetPath(u.logo)} alt={u.name} class="max-w-[82%] max-h-[82%] object-contain" />
+          <img src={assetPath(u.logo)} alt="" class="max-w-[82%] max-h-[82%] object-contain" />
         </a>
+      ))
+    }
+    {
+      orbit.map((u) => (
+        <span
+          aria-hidden="true"
+          class="absolute -translate-x-1/2 font-semibold leading-none text-base-content/75 whitespace-nowrap pointer-events-none"
+          style={`left:${u.x}px;top:${u.y + chip / 2 + 5}px;font-size:${Math.max(10, Math.round(size * 0.022))}px`}
+        >{u.name}</span>
       ))
     }
     <div
@@ -81,12 +91,16 @@ const orbit = UNIS.map((u, i) => {
           <li>
             <a
               href={u.href}
-              rel="noopener"
+              rel="noopener noreferrer"
               target="_blank"
               title={u.name}
-              class="aspect-square rounded-box bg-base-100 border border-base-300 flex items-center justify-center p-3"
+              aria-label={u.name}
+              class="flex flex-col items-center gap-1.5"
             >
-              <img src={assetPath(u.logo)} alt={u.name} class="max-w-[80%] max-h-[80%] object-contain" />
+              <span class="w-full aspect-square rounded-box bg-base-100 border border-base-300 flex items-center justify-center p-3">
+                <img src={assetPath(u.logo)} alt="" class="max-w-[80%] max-h-[80%] object-contain" />
+              </span>
+              <span class="text-xs font-semibold leading-none text-base-content/75">{u.name}</span>
             </a>
           </li>
         ))
