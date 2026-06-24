@@ -47,22 +47,23 @@ const orbit = UNIS.map((u, i) => {
       {orbit.map((u) => <line x1={c} y1={c} x2={u.x} y2={u.y} stroke="currentColor" stroke-width="1" />)}
     </svg>
     {
-      orbit.map((u) => (
+      orbit.map((u, i) => (
         <a
           href={u.href}
           rel="noopener noreferrer"
           target="_blank"
           title={`${u.name} — ${u.pais}`}
           aria-label={`${u.name} (${u.pais})`}
-          class="group absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-base-100 border border-base-300 shadow-sm overflow-hidden flex items-center justify-center transition-transform hover:scale-105 hover:border-primary/40 hover:shadow-md"
+          class="orb-chip group absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-base-100 border border-base-300 shadow-sm overflow-hidden flex items-center justify-center transition-transform hover:scale-105 hover:border-primary/40 hover:shadow-md"
           style={`left:${u.x}px;top:${u.y}px;width:${chip}px;height:${chip}px`}
         >
           <img
             src={assetPath(u.logo)}
             alt=""
-            class="absolute max-w-[78%] max-h-[78%] object-contain opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+            class="orb-logo absolute max-w-[78%] max-h-[78%] object-contain"
+            style={`animation-delay:${(i * 0.45).toFixed(2)}s`}
           />
-          <span class="relative z-10 text-center leading-none px-1 transition-opacity duration-200 group-hover:opacity-0 group-focus-visible:opacity-0">
+          <span class="orb-label relative z-10 text-center leading-none px-1" style={`animation-delay:${(i * 0.45).toFixed(2)}s`}>
             <span class="block font-bold text-base-content" style={`font-size:${Math.max(11, Math.round(size * 0.024))}px`}>{u.name}</span>
             <span class="block font-semibold uppercase text-base-content/60 mt-0.5" style={`font-size:${Math.max(7, Math.round(size * 0.0155))}px;letter-spacing:.03em`}>{u.pais}</span>
           </span>
@@ -86,7 +87,7 @@ const orbit = UNIS.map((u, i) => {
     </div>
     <ul class="grid grid-cols-3 gap-3 list-none p-0 m-0">
       {
-        UNIS.map((u) => (
+        UNIS.map((u, i) => (
           <li>
             <a
               href={u.href}
@@ -94,14 +95,14 @@ const orbit = UNIS.map((u, i) => {
               target="_blank"
               title={`${u.name} — ${u.pais}`}
               aria-label={`${u.name} (${u.pais})`}
-              class="block"
+              class="orb-chip block"
             >
-              <span class="block w-full aspect-square rounded-box bg-base-100 border border-base-300 flex items-center justify-center p-3">
-                <img src={assetPath(u.logo)} alt="" class="max-w-[80%] max-h-[80%] object-contain" />
-              </span>
-              <span class="mt-1.5 block text-center leading-none">
-                <span class="block text-sm font-bold text-base-content">{u.name}</span>
-                <span class="block text-[10px] font-semibold uppercase tracking-wide text-base-content/60 mt-0.5">{u.pais}</span>
+              <span class="relative block w-full aspect-square rounded-box bg-base-100 border border-base-300 overflow-hidden flex items-center justify-center p-3">
+                <img src={assetPath(u.logo)} alt="" class="orb-logo absolute max-w-[72%] max-h-[72%] object-contain" style={`animation-delay:${(i * 0.45).toFixed(2)}s`} />
+                <span class="orb-label relative z-10 text-center leading-none" style={`animation-delay:${(i * 0.45).toFixed(2)}s`}>
+                  <span class="block text-sm font-bold text-base-content">{u.name}</span>
+                  <span class="block text-[10px] font-semibold uppercase tracking-wide text-base-content/60 mt-0.5">{u.pais}</span>
+                </span>
               </span>
             </a>
           </li>
@@ -110,3 +111,43 @@ const orbit = UNIS.map((u, i) => {
     </ul>
   </div>
 </div>
+
+<style>
+  /* alterna automaticamente entre a sigla/país e o logo (crossfade) */
+  @keyframes orbLabel {
+    0%, 44% { opacity: 1; }
+    50%, 94% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes orbLogo {
+    0%, 44% { opacity: 0; }
+    50%, 94% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  .orb-label {
+    animation: orbLabel 6s ease-in-out infinite;
+  }
+  .orb-logo {
+    opacity: 0;
+    animation: orbLogo 6s ease-in-out infinite;
+  }
+  /* ao passar o mouse, segura no logo para dar tempo de ver */
+  .orb-chip:hover .orb-label,
+  .orb-chip:focus-visible .orb-label {
+    animation: none;
+    opacity: 0;
+  }
+  .orb-chip:hover .orb-logo,
+  .orb-chip:focus-visible .orb-logo {
+    animation: none;
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .orb-label { animation: none; opacity: 1; }
+    .orb-logo { animation: none; opacity: 0; }
+    .orb-chip:hover .orb-label,
+    .orb-chip:focus-visible .orb-label { opacity: 0; }
+    .orb-chip:hover .orb-logo,
+    .orb-chip:focus-visible .orb-logo { opacity: 1; }
+  }
+</style>
