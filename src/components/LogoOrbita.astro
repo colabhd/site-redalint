@@ -16,22 +16,22 @@ interface Props {
 const { size = 540, class: cls = '' } = Astro.props;
 
 const UNIS = [
-  { name: 'UNCo', href: 'https://www.uncoma.edu.ar', logo: '/imagens/wp/UNCO-282x300.png' },
-  { name: 'UNS', href: 'https://www.uns.edu.ar/', logo: '/imagens/wp/uns-300x196.jpg' },
-  { name: 'UNSAM', href: 'https://www.unsam.edu.ar', logo: '/imagens/parceiros/unsam.png' },
-  { name: 'UNESP', href: 'https://www2.unesp.br', logo: '/imagens/wp/unesp.png' },
-  { name: 'UCS', href: 'https://www.ucs.br', logo: '/imagens/parceiros/ucs.png' },
-  { name: 'UFPel', href: 'https://portal.ufpel.edu.br', logo: '/imagens/parceiros/ufpel.png' },
-  { name: 'UFSC', href: 'https://ufsc.br', logo: '/imagens/parceiros/ufsc.png' },
-  { name: 'UEPA', href: 'https://www.uepa.br', logo: '/imagens/parceiros/uepa.png' },
-  { name: 'UCN', href: 'https://www.ucn.cl', logo: '/imagens/parceiros/ucn.png' },
-  { name: 'UDP', href: 'https://www.udp.cl', logo: '/imagens/parceiros/udp.png' },
+  { name: 'UNCo', pais: 'Argentina', href: 'https://www.uncoma.edu.ar', logo: '/imagens/wp/UNCO-282x300.png' },
+  { name: 'UNS', pais: 'Argentina', href: 'https://www.uns.edu.ar/', logo: '/imagens/wp/uns-300x196.jpg' },
+  { name: 'UNSAM', pais: 'Argentina', href: 'https://www.unsam.edu.ar', logo: '/imagens/parceiros/unsam.png' },
+  { name: 'UNESP', pais: 'Brasil', href: 'https://www2.unesp.br', logo: '/imagens/wp/unesp.png' },
+  { name: 'UCS', pais: 'Brasil', href: 'https://www.ucs.br', logo: '/imagens/parceiros/ucs.png' },
+  { name: 'UFPel', pais: 'Brasil', href: 'https://portal.ufpel.edu.br', logo: '/imagens/parceiros/ufpel.png' },
+  { name: 'UFSC', pais: 'Brasil', href: 'https://ufsc.br', logo: '/imagens/parceiros/ufsc.png' },
+  { name: 'UEPA', pais: 'Brasil', href: 'https://www.uepa.br', logo: '/imagens/parceiros/uepa.png' },
+  { name: 'UCN', pais: 'Chile', href: 'https://www.ucn.cl', logo: '/imagens/parceiros/ucn.png' },
+  { name: 'UDP', pais: 'Chile', href: 'https://www.udp.cl', logo: '/imagens/parceiros/udp.png' },
 ];
 
 const c = size / 2;
-const R = size * 0.38;
-const chip = Math.round(size * 0.165);
-const center = Math.round(size * 0.42);
+const R = size * 0.37;
+const chip = Math.round(size * 0.185);
+const center = Math.round(size * 0.4);
 const wordmark = assetPath('/imagens/redalint-wordmark.png');
 const mapa = assetPath('/imagens/mapa-america-latina-forte.png');
 const orbit = UNIS.map((u, i) => {
@@ -52,22 +52,19 @@ const orbit = UNIS.map((u, i) => {
           href={u.href}
           rel="noopener noreferrer"
           target="_blank"
-          title={u.name}
-          aria-label={u.name}
-          class="absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-base-100 border border-base-300 shadow-sm flex items-center justify-center transition-transform hover:scale-110 hover:border-primary/40"
-          style={`left:${u.x}px;top:${u.y}px;width:${chip}px;height:${chip}px;padding:${Math.round(chip * 0.18)}px`}
+          title={`${u.name} — ${u.pais}`}
+          aria-label={`${u.name} (${u.pais})`}
+          class="group absolute -translate-x-1/2 -translate-y-1/2"
+          style={`left:${u.x}px;top:${u.y}px;width:${chip}px;height:${chip}px`}
         >
-          <img src={assetPath(u.logo)} alt="" class="max-w-[82%] max-h-[82%] object-contain" />
+          <span class="block w-full h-full rounded-full bg-base-100 border border-base-300 shadow-sm flex items-center justify-center transition-transform group-hover:scale-105 group-hover:border-primary/40">
+            <img src={assetPath(u.logo)} alt="" class="max-w-[78%] object-contain -translate-y-[12%]" style={`max-height:${Math.round(chip * 0.52)}px`} />
+          </span>
+          <span class="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-[28%] px-2 py-0.5 rounded-full bg-base-100/85 backdrop-blur-sm border border-base-300 shadow-sm text-center leading-none">
+            <span class="block font-bold text-base-content" style={`font-size:${Math.max(10, Math.round(size * 0.021))}px`}>{u.name}</span>
+            <span class="block font-semibold uppercase text-base-content/55 mt-px" style={`font-size:${Math.max(7, Math.round(size * 0.0145))}px;letter-spacing:.03em`}>{u.pais}</span>
+          </span>
         </a>
-      ))
-    }
-    {
-      orbit.map((u) => (
-        <span
-          aria-hidden="true"
-          class="absolute -translate-x-1/2 font-semibold leading-none text-base-content/75 whitespace-nowrap pointer-events-none"
-          style={`left:${u.x}px;top:${u.y + chip / 2 + 5}px;font-size:${Math.max(10, Math.round(size * 0.022))}px`}
-        >{u.name}</span>
       ))
     }
     <div
@@ -93,14 +90,17 @@ const orbit = UNIS.map((u, i) => {
               href={u.href}
               rel="noopener noreferrer"
               target="_blank"
-              title={u.name}
-              aria-label={u.name}
-              class="flex flex-col items-center gap-1.5"
+              title={`${u.name} — ${u.pais}`}
+              aria-label={`${u.name} (${u.pais})`}
+              class="block"
             >
-              <span class="w-full aspect-square rounded-box bg-base-100 border border-base-300 flex items-center justify-center p-3">
-                <img src={assetPath(u.logo)} alt="" class="max-w-[80%] max-h-[80%] object-contain" />
+              <span class="relative block w-full aspect-square rounded-box bg-base-100 border border-base-300 overflow-hidden flex items-center justify-center">
+                <img src={assetPath(u.logo)} alt="" class="max-w-[78%] max-h-[58%] object-contain -translate-y-2" />
+                <span class="absolute inset-x-0 bottom-0 bg-base-100/85 backdrop-blur-sm border-t border-base-300 py-1 text-center leading-none">
+                  <span class="block text-xs font-bold text-base-content">{u.name}</span>
+                  <span class="block text-[9px] font-semibold uppercase tracking-wide text-base-content/55 mt-0.5">{u.pais}</span>
+                </span>
               </span>
-              <span class="text-xs font-semibold leading-none text-base-content/75">{u.name}</span>
             </a>
           </li>
         ))
