@@ -1,0 +1,153 @@
+---
+/**
+ * Órbita de instituições: logo da REDALINT ao centro e as universidades
+ * da rede em volta, em caixas de tamanho uniforme. Fonte única da lista.
+ *
+ * Para manter: basta adicionar/remover um item em `UNIS` — as posições
+ * no anel são recalculadas automaticamente. No mobile vira logo + grade.
+ */
+import { assetPath } from '~/utils/paths';
+
+interface Props {
+  /** lado do palco em px (desktop). Padrão 540. */
+  size?: number;
+  class?: string;
+}
+const { size = 540, class: cls = '' } = Astro.props;
+
+const UNIS = [
+  { name: 'UNCo', pais: 'Argentina', href: 'https://www.uncoma.edu.ar', logo: '/imagens/wp/UNCO-282x300.png' },
+  { name: 'UNS', pais: 'Argentina', href: 'https://www.uns.edu.ar/', logo: '/imagens/wp/uns-300x196.jpg' },
+  { name: 'UNSAM', pais: 'Argentina', href: 'https://www.unsam.edu.ar', logo: '/imagens/parceiros/unsam.png' },
+  { name: 'UNESP', pais: 'Brasil', href: 'https://www2.unesp.br', logo: '/imagens/wp/unesp.png' },
+  { name: 'UCS', pais: 'Brasil', href: 'https://www.ucs.br', logo: '/imagens/parceiros/ucs.png' },
+  { name: 'UFPel', pais: 'Brasil', href: 'https://portal.ufpel.edu.br', logo: '/imagens/parceiros/ufpel.png' },
+  { name: 'UFSC', pais: 'Brasil', href: 'https://ufsc.br', logo: '/imagens/parceiros/ufsc.png' },
+  { name: 'UEPA', pais: 'Brasil', href: 'https://www.uepa.br', logo: '/imagens/parceiros/uepa.png' },
+  { name: 'UCN', pais: 'Chile', href: 'https://www.ucn.cl', logo: '/imagens/parceiros/ucn.png' },
+  { name: 'UDP', pais: 'Chile', href: 'https://www.udp.cl', logo: '/imagens/parceiros/udp.png' },
+];
+
+const c = size / 2;
+const R = size * 0.37;
+const chip = Math.round(size * 0.185);
+const center = Math.round(size * 0.4);
+const wordmark = assetPath('/imagens/redalint-wordmark.png');
+const mapa = assetPath('/imagens/mapa-america-latina-forte.png');
+const orbit = UNIS.map((u, i) => {
+  const a = (i / UNIS.length) * 2 * Math.PI - Math.PI / 2;
+  return { ...u, x: c + R * Math.cos(a), y: c + R * Math.sin(a) };
+});
+---
+
+<div class={cls}>
+  <!-- DESKTOP: órbita -->
+  <div class="relative mx-auto hidden md:block" style={`width:${size}px;height:${size}px;max-width:100%`}>
+    <svg class="absolute inset-0 w-full h-full text-primary/15" viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
+      {orbit.map((u) => <line x1={c} y1={c} x2={u.x} y2={u.y} stroke="currentColor" stroke-width="1" />)}
+    </svg>
+    {
+      orbit.map((u, i) => (
+        <a
+          href={u.href}
+          rel="noopener noreferrer"
+          target="_blank"
+          title={`${u.name} — ${u.pais}`}
+          aria-label={`${u.name} (${u.pais})`}
+          class="orb-chip group absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-base-100 border border-base-300 shadow-sm overflow-hidden flex items-center justify-center transition-transform hover:scale-105 hover:border-primary/40 hover:shadow-md"
+          style={`left:${u.x}px;top:${u.y}px;width:${chip}px;height:${chip}px`}
+        >
+          <img
+            src={assetPath(u.logo)}
+            alt=""
+            class="orb-logo absolute max-w-[78%] max-h-[78%] object-contain"
+            style={`animation-delay:${(i * 0.45).toFixed(2)}s`}
+          />
+          <span class="orb-label relative z-10 text-center leading-none px-1" style={`animation-delay:${(i * 0.45).toFixed(2)}s`}>
+            <span class="block font-bold text-base-content" style={`font-size:${Math.max(11, Math.round(size * 0.024))}px`}>{u.name}</span>
+            <span class="block font-semibold uppercase text-base-content/60 mt-0.5" style={`font-size:${Math.max(7, Math.round(size * 0.0155))}px;letter-spacing:.03em`}>{u.pais}</span>
+          </span>
+        </a>
+      ))
+    }
+    <div
+      class="absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-base-100 ring-4 ring-primary/15 shadow-xl flex items-center justify-center"
+      style={`left:${c}px;top:${c}px;width:${center}px;height:${center}px`}
+    >
+      <img src={mapa} alt="" class="absolute object-contain" style="width:80%;height:80%" />
+      <img src={wordmark} alt="REDALINT" class="relative z-10 object-contain" style="width:60%;transform:translateX(-9%);filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 2px #fff)" />
+    </div>
+  </div>
+
+  <!-- MOBILE: logo + grade -->
+  <div class="md:hidden">
+    <div class="relative mx-auto w-52 h-52 rounded-full bg-base-100 ring-4 ring-primary/15 shadow-lg flex items-center justify-center mb-6">
+      <img src={mapa} alt="" class="absolute object-contain" style="width:80%;height:80%" />
+      <img src={wordmark} alt="REDALINT" class="relative z-10 object-contain" style="width:60%;transform:translateX(-9%);filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 2px #fff)" />
+    </div>
+    <ul class="grid grid-cols-3 gap-3 list-none p-0 m-0">
+      {
+        UNIS.map((u, i) => (
+          <li>
+            <a
+              href={u.href}
+              rel="noopener noreferrer"
+              target="_blank"
+              title={`${u.name} — ${u.pais}`}
+              aria-label={`${u.name} (${u.pais})`}
+              class="orb-chip block"
+            >
+              <span class="relative block w-full aspect-square rounded-box bg-base-100 border border-base-300 overflow-hidden flex items-center justify-center p-3">
+                <img src={assetPath(u.logo)} alt="" class="orb-logo absolute max-w-[72%] max-h-[72%] object-contain" style={`animation-delay:${(i * 0.45).toFixed(2)}s`} />
+                <span class="orb-label relative z-10 text-center leading-none" style={`animation-delay:${(i * 0.45).toFixed(2)}s`}>
+                  <span class="block text-sm font-bold text-base-content">{u.name}</span>
+                  <span class="block text-[10px] font-semibold uppercase tracking-wide text-base-content/60 mt-0.5">{u.pais}</span>
+                </span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>
+
+<style>
+  /* alterna automaticamente entre a sigla/país e o logo (crossfade) */
+  @keyframes orbLabel {
+    0%, 44% { opacity: 1; }
+    50%, 94% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes orbLogo {
+    0%, 44% { opacity: 0; }
+    50%, 94% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  .orb-label {
+    animation: orbLabel 6s ease-in-out infinite;
+  }
+  .orb-logo {
+    opacity: 0;
+    animation: orbLogo 6s ease-in-out infinite;
+  }
+  /* ao passar o mouse, segura no logo para dar tempo de ver */
+  .orb-chip:hover .orb-label,
+  .orb-chip:focus-visible .orb-label {
+    animation: none;
+    opacity: 0;
+  }
+  .orb-chip:hover .orb-logo,
+  .orb-chip:focus-visible .orb-logo {
+    animation: none;
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .orb-label { animation: none; opacity: 1; }
+    .orb-logo { animation: none; opacity: 0; }
+    .orb-chip:hover .orb-label,
+    .orb-chip:focus-visible .orb-label { opacity: 0; }
+    .orb-chip:hover .orb-logo,
+    .orb-chip:focus-visible .orb-logo { opacity: 1; }
+  }
+</style>
