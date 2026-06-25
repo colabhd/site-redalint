@@ -16,16 +16,16 @@ interface Props {
 const { size = 540, class: cls = '' } = Astro.props;
 
 const UNIS = [
-  { name: 'UNCo', pais: 'Argentina', href: 'https://www.uncoma.edu.ar', logo: '/imagens/wp/UNCO-282x300.png' },
-  { name: 'UNS', pais: 'Argentina', href: 'https://www.uns.edu.ar/', logo: '/imagens/wp/uns-300x196.jpg' },
-  { name: 'UNSAM', pais: 'Argentina', href: 'https://www.unsam.edu.ar', logo: '/imagens/parceiros/unsam.png' },
   { name: 'UNESP', pais: 'Brasil', href: 'https://www2.unesp.br', logo: '/imagens/wp/unesp.png' },
+  { name: 'UNCo', pais: 'Argentina', href: 'https://www.uncoma.edu.ar', logo: '/imagens/wp/UNCO-282x300.png' },
   { name: 'UCS', pais: 'Brasil', href: 'https://www.ucs.br', logo: '/imagens/parceiros/ucs.png' },
-  { name: 'UFPel', pais: 'Brasil', href: 'https://portal.ufpel.edu.br', logo: '/imagens/parceiros/ufpel.png' },
-  { name: 'UFSC', pais: 'Brasil', href: 'https://ufsc.br', logo: '/imagens/parceiros/ufsc.png' },
-  { name: 'UEPA', pais: 'Brasil', href: 'https://www.uepa.br', logo: '/imagens/parceiros/uepa.png' },
   { name: 'UCN', pais: 'Chile', href: 'https://www.ucn.cl', logo: '/imagens/parceiros/ucn.png' },
+  { name: 'UFSC', pais: 'Brasil', href: 'https://ufsc.br', logo: '/imagens/parceiros/ufsc.png' },
+  { name: 'UNS', pais: 'Argentina', href: 'https://www.uns.edu.ar/', logo: '/imagens/wp/uns-300x196.jpg' },
+  { name: 'UEPA', pais: 'Brasil', href: 'https://www.uepa.br', logo: '/imagens/parceiros/uepa.png' },
   { name: 'UDP', pais: 'Chile', href: 'https://www.udp.cl', logo: '/imagens/parceiros/udp.png' },
+  { name: 'UFPel', pais: 'Brasil', href: 'https://portal.ufpel.edu.br', logo: '/imagens/parceiros/ufpel.png' },
+  { name: 'UNSAM', pais: 'Argentina', href: 'https://www.unsam.edu.ar', logo: '/imagens/parceiros/unsam.png' },
 ];
 
 const c = size / 2;
@@ -61,9 +61,8 @@ const orbit = UNIS.map((u, i) => {
             src={assetPath(u.logo)}
             alt=""
             class="orb-logo absolute max-w-[78%] max-h-[78%] object-contain"
-            style={`animation-delay:${(i * 0.45).toFixed(2)}s`}
           />
-          <span class="orb-label relative z-10 text-center leading-none px-1" style={`animation-delay:${(i * 0.45).toFixed(2)}s`}>
+          <span class="orb-label relative z-10 text-center leading-none px-1">
             <span class="block font-extrabold tracking-tight text-base-content" style={`font-size:${Math.max(13, Math.round(size * 0.028))}px`}>{u.name}</span>
             <span class="block font-bold uppercase text-primary mt-1" style={`font-size:${Math.max(8, Math.round(size * 0.0175))}px;letter-spacing:.06em`}>{u.pais}</span>
           </span>
@@ -98,8 +97,8 @@ const orbit = UNIS.map((u, i) => {
               class="orb-chip block"
             >
               <span class="relative block w-full aspect-square rounded-box bg-base-100 border border-base-300 overflow-hidden flex items-center justify-center p-3">
-                <img src={assetPath(u.logo)} alt="" class="orb-logo absolute max-w-[72%] max-h-[72%] object-contain" style={`animation-delay:${(i * 0.45).toFixed(2)}s`} />
-                <span class="orb-label relative z-10 text-center leading-none" style={`animation-delay:${(i * 0.45).toFixed(2)}s`}>
+                <img src={assetPath(u.logo)} alt="" class="orb-logo absolute max-w-[72%] max-h-[72%] object-contain" />
+                <span class="orb-label relative z-10 text-center leading-none">
                   <span class="block text-base font-extrabold tracking-tight text-base-content">{u.name}</span>
                   <span class="block text-[11px] font-bold uppercase tracking-wider text-primary mt-1">{u.pais}</span>
                 </span>
