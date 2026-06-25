@@ -16,16 +16,16 @@ interface Props {
 const { size = 540, class: cls = '' } = Astro.props;
 
 const UNIS = [
-  { name: 'UNCo', pais: 'Argentina', href: 'https://www.uncoma.edu.ar', logo: '/imagens/wp/UNCO-282x300.png' },
-  { name: 'UNS', pais: 'Argentina', href: 'https://www.uns.edu.ar/', logo: '/imagens/wp/uns-300x196.jpg' },
-  { name: 'UNSAM', pais: 'Argentina', href: 'https://www.unsam.edu.ar', logo: '/imagens/parceiros/unsam.png' },
   { name: 'UNESP', pais: 'Brasil', href: 'https://www2.unesp.br', logo: '/imagens/wp/unesp.png' },
+  { name: 'UNCo', pais: 'Argentina', href: 'https://www.uncoma.edu.ar', logo: '/imagens/wp/UNCO-282x300.png' },
   { name: 'UCS', pais: 'Brasil', href: 'https://www.ucs.br', logo: '/imagens/parceiros/ucs.png' },
-  { name: 'UFPel', pais: 'Brasil', href: 'https://portal.ufpel.edu.br', logo: '/imagens/parceiros/ufpel.png' },
-  { name: 'UFSC', pais: 'Brasil', href: 'https://ufsc.br', logo: '/imagens/parceiros/ufsc.png' },
-  { name: 'UEPA', pais: 'Brasil', href: 'https://www.uepa.br', logo: '/imagens/parceiros/uepa.png' },
   { name: 'UCN', pais: 'Chile', href: 'https://www.ucn.cl', logo: '/imagens/parceiros/ucn.png' },
+  { name: 'UFSC', pais: 'Brasil', href: 'https://ufsc.br', logo: '/imagens/parceiros/ufsc.png' },
+  { name: 'UNS', pais: 'Argentina', href: 'https://www.uns.edu.ar/', logo: '/imagens/wp/uns-300x196.jpg' },
+  { name: 'UEPA', pais: 'Brasil', href: 'https://www.uepa.br', logo: '/imagens/parceiros/uepa.png' },
   { name: 'UDP', pais: 'Chile', href: 'https://www.udp.cl', logo: '/imagens/parceiros/udp.png' },
+  { name: 'UFPel', pais: 'Brasil', href: 'https://portal.ufpel.edu.br', logo: '/imagens/parceiros/ufpel.png' },
+  { name: 'UNSAM', pais: 'Argentina', href: 'https://www.unsam.edu.ar', logo: '/imagens/parceiros/unsam.png' },
 ];
 
 const c = size / 2;
@@ -38,38 +38,79 @@ const orbit = UNIS.map((u, i) => {
   const a = (i / UNIS.length) * 2 * Math.PI - Math.PI / 2;
   return { ...u, x: c + R * Math.cos(a), y: c + R * Math.sin(a) };
 });
+
+/* Animação (gerada conforme N): a cada ciclo de troca o anel avança uma
+   posição (360°/N), girando rápido no intervalo em que o conteúdo está
+   oculto; os chips contra-giram para o conteúdo permanecer em pé. Como
+   as bolinhas são iguais e equidistantes, o giro do anel é imperceptível
+   nelas — só o conteúdo reaparece deslocado. */
+const N = UNIS.length;
+const stepDeg = 360 / N;
+const cycleS = 6; // duração de um ciclo de troca (sigla -> logo)
+const durS = N * cycleS; // uma volta completa
+let ringKf = '0%{transform:rotate(0deg)}';
+let spinKf = '0%{transform:rotate(0deg)}';
+for (let k = 0; k < N; k++) {
+  const holdEnd = (((k + 0.96) / N) * 100).toFixed(3);
+  const stepEnd = (((k + 1) / N) * 100).toFixed(3);
+  const holdA = (k * stepDeg).toFixed(3);
+  const nextA = ((k + 1) * stepDeg).toFixed(3);
+  ringKf += `${holdEnd}%{transform:rotate(${holdA}deg)}${stepEnd}%{transform:rotate(${nextA}deg)}`;
+  spinKf += `${holdEnd}%{transform:rotate(-${holdA}deg)}${stepEnd}%{transform:rotate(-${nextA}deg)}`;
+}
+const animCss = `
+@keyframes loRing{${ringKf}}
+@keyframes loSpin{${spinKf}}
+@keyframes loLabel{0%{opacity:0}4%{opacity:1}42%{opacity:1}48%{opacity:0}100%{opacity:0}}
+@keyframes loLogo{0%{opacity:0}52%{opacity:0}58%{opacity:1}90%{opacity:1}96%{opacity:0}100%{opacity:0}}
+.lo-root .orb-ring{transform-origin:50% 50%;animation:loRing ${durS}s ease-in-out infinite}
+.lo-root .chip-inner{transform-origin:50% 50%;animation:loSpin ${durS}s ease-in-out infinite}
+.lo-root .orb-label{animation:loLabel ${cycleS}s ease-in-out infinite}
+.lo-root .orb-logo{opacity:0;animation:loLogo ${cycleS}s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){
+  .lo-root .orb-ring,.lo-root .chip-inner,.lo-root .orb-label,.lo-root .orb-logo{animation:none}
+  .lo-root .orb-label{opacity:1}.lo-root .orb-logo{opacity:0}
+  .lo-root .orb-chip:hover .orb-logo,.lo-root .orb-chip:focus-visible .orb-logo{opacity:1}
+  .lo-root .orb-chip:hover .orb-label,.lo-root .orb-chip:focus-visible .orb-label{opacity:0}
+}
+`;
 ---
 
-<div class:list={['not-prose', cls]}>
+<div class:list={['not-prose', 'lo-root', cls]}>
   <!-- DESKTOP: órbita -->
   <div class="relative mx-auto hidden md:block" style={`width:${size}px;height:${size}px;max-width:100%`}>
-    <svg class="absolute inset-0 w-full h-full text-primary/15" viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
-      {orbit.map((u) => <line x1={c} y1={c} x2={u.x} y2={u.y} stroke="currentColor" stroke-width="1" />)}
-    </svg>
-    {
-      orbit.map((u, i) => (
-        <a
-          href={u.href}
-          rel="noopener noreferrer"
-          target="_blank"
-          title={`${u.name} — ${u.pais}`}
-          aria-label={`${u.name} (${u.pais})`}
-          class="orb-chip group absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-base-100 border border-base-300 shadow-sm overflow-hidden flex items-center justify-center transition-transform hover:scale-105 hover:border-primary/40 hover:shadow-md"
-          style={`left:${u.x}px;top:${u.y}px;width:${chip}px;height:${chip}px`}
-        >
-          <img
-            src={assetPath(u.logo)}
-            alt=""
-            class="orb-logo absolute max-w-[78%] max-h-[78%] object-contain"
-            style={`animation-delay:${(i * 0.45).toFixed(2)}s`}
-          />
-          <span class="orb-label relative z-10 text-center leading-none px-1" style={`animation-delay:${(i * 0.45).toFixed(2)}s`}>
-            <span class="block font-extrabold tracking-tight text-base-content" style={`font-size:${Math.max(13, Math.round(size * 0.028))}px`}>{u.name}</span>
-            <span class="block font-bold uppercase text-primary mt-1" style={`font-size:${Math.max(8, Math.round(size * 0.0175))}px;letter-spacing:.06em`}>{u.pais}</span>
-          </span>
-        </a>
-      ))
-    }
+    <!-- anel que avança uma posição por ciclo -->
+    <div class="orb-ring absolute inset-0">
+      <svg class="absolute inset-0 w-full h-full text-primary/15" viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
+        {orbit.map((u) => <line x1={c} y1={c} x2={u.x} y2={u.y} stroke="currentColor" stroke-width="1" />)}
+      </svg>
+      {
+        orbit.map((u) => (
+          <a
+            href={u.href}
+            rel="noopener noreferrer"
+            target="_blank"
+            title={`${u.name} — ${u.pais}`}
+            aria-label={`${u.name} (${u.pais})`}
+            class="orb-chip absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-base-100 border border-base-300 shadow-sm overflow-hidden transition-[border-color] hover:border-primary/40"
+            style={`left:${u.x}px;top:${u.y}px;width:${chip}px;height:${chip}px`}
+          >
+            <span class="chip-inner absolute inset-0 flex items-center justify-center">
+              <img
+                src={assetPath(u.logo)}
+                alt=""
+                class="orb-logo absolute max-w-[66%] max-h-[58%] object-contain"
+              />
+              <span class="orb-label relative z-10 text-center leading-none px-1">
+                <span class="block font-extrabold tracking-tight text-base-content" style={`font-size:${Math.max(13, Math.round(size * 0.028))}px`}>{u.name}</span>
+                <span class="block font-bold uppercase text-primary mt-1" style={`font-size:${Math.max(8, Math.round(size * 0.0175))}px;letter-spacing:.06em`}>{u.pais}</span>
+              </span>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+    <!-- centro fixo (não gira) -->
     <div
       class="absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-base-100 ring-4 ring-primary/15 shadow-xl flex items-center justify-center"
       style={`left:${c}px;top:${c}px;width:${center}px;height:${center}px`}
@@ -98,8 +139,8 @@ const orbit = UNIS.map((u, i) => {
               class="orb-chip block"
             >
               <span class="relative block w-full aspect-square rounded-box bg-base-100 border border-base-300 overflow-hidden flex items-center justify-center p-3">
-                <img src={assetPath(u.logo)} alt="" class="orb-logo absolute max-w-[72%] max-h-[72%] object-contain" style={`animation-delay:${(i * 0.45).toFixed(2)}s`} />
-                <span class="orb-label relative z-10 text-center leading-none" style={`animation-delay:${(i * 0.45).toFixed(2)}s`}>
+                <img src={assetPath(u.logo)} alt="" class="orb-logo absolute max-w-[68%] max-h-[64%] object-contain" />
+                <span class="orb-label relative z-10 text-center leading-none">
                   <span class="block text-base font-extrabold tracking-tight text-base-content">{u.name}</span>
                   <span class="block text-[11px] font-bold uppercase tracking-wider text-primary mt-1">{u.pais}</span>
                 </span>
@@ -112,42 +153,4 @@ const orbit = UNIS.map((u, i) => {
   </div>
 </div>
 
-<style>
-  /* alterna automaticamente entre a sigla/país e o logo (crossfade) */
-  @keyframes orbLabel {
-    0%, 44% { opacity: 1; }
-    50%, 94% { opacity: 0; }
-    100% { opacity: 1; }
-  }
-  @keyframes orbLogo {
-    0%, 44% { opacity: 0; }
-    50%, 94% { opacity: 1; }
-    100% { opacity: 0; }
-  }
-  .orb-label {
-    animation: orbLabel 6s ease-in-out infinite;
-  }
-  .orb-logo {
-    opacity: 0;
-    animation: orbLogo 6s ease-in-out infinite;
-  }
-  /* ao passar o mouse, segura no logo para dar tempo de ver */
-  .orb-chip:hover .orb-label,
-  .orb-chip:focus-visible .orb-label {
-    animation: none;
-    opacity: 0;
-  }
-  .orb-chip:hover .orb-logo,
-  .orb-chip:focus-visible .orb-logo {
-    animation: none;
-    opacity: 1;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .orb-label { animation: none; opacity: 1; }
-    .orb-logo { animation: none; opacity: 0; }
-    .orb-chip:hover .orb-label,
-    .orb-chip:focus-visible .orb-label { opacity: 0; }
-    .orb-chip:hover .orb-logo,
-    .orb-chip:focus-visible .orb-logo { opacity: 1; }
-  }
-</style>
+<style is:inline set:html={animCss}></style>
